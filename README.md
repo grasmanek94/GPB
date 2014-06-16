@@ -1,8 +1,8 @@
 All releases are automaticly licensed under the "Gamer_Z's BSD LICENSE" ( See Other Licenses ) unless stated otherwise in the readme of the archive (or file[s]) in which the release is contained. The license in the readme covers all the files in the zip archive in which it resides unless stated otherwise in the readme.
 
-----
+
 Please report any ideas and give feedback through github
-----
+
 
 <table>
 <tr><td><font size="4"><b>Plugins</b></font></td><td></td> 
