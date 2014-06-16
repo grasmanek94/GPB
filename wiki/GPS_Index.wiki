@@ -1,0 +1,412 @@
+#summary GPS Plugin Index
+
+= GPS Plugin a.k.a. RouteConnector =
+
+With the help of this plugin you can manage routes on the roades easily, and also manipulate the information.
+This plugin is a recommended 'must have' for RP and trucking servers.
+
+== Pre-Definitions ==
+<code language="PAWN">
+#define MAX_NODES					(32768)
+
+#define MAX_CONNECTIONS				(5)
+
+
+#define CONNECT_TYPE_BOTH			(0)//used for 2-way connecting of nodes
+
+#define CONNECT_TYPE_One_To_Two		(1)//used for directional connecting of nodes
+</code>
+
+== Functions ==
+
+<code language="PAWN"> native AddNode(Float:X,Float:Y,Float:Z,AddToPathFinder = 0);</code><pre>
+	Function:
+		AddNode
+	Description:
+		Adds a node into the memory of the plugin,
+		This node will be unavailable in route calculations.
+	Parameters:
+		Position as X Y Z
+		AddToPathFinder - if set to 1 it will also make sure the graph will be updated so when searching for a route it will be added to the list.
+	Returns the added nodeID, -1 if failed.
+	Note:
+		NEVER EVER set AddToPathFinder to 1 when a calculation is in progress! THAT IS YOUR OWN RESPOSIBILITY IF IT HAPPENS.
+
+</pre><code language="PAWN"> native AddNodeEx(ID,Float:X,Float:Y,Float:Z,AddToPathFinder = 0);</code><pre>
+	Function:
+		AddNodeEx
+	Description:
+		The only difference with AddNode is that you can specify your own NodeID here.
+		Gaps may now be present.
+	Parameters:
+		ID as Custom NodeID
+		Position as X Y Z
+		AddToPathFinder - if set to 1 it will also make sure the graph will be updated so when searching for a route it will be added to the list.
+	Returns the added nodeID, -1 if failed.
+	Note:
+		NEVER EVER set AddToPathFinder to 1 when a calculation is in progress! THAT IS YOUR OWN RESPOSIBILITY IF IT HAPPENS.
+</pre>
+
+
+<code language="PAWN"> native ConnectNodes(NodeID_one,NodeID_two,AddToPathFinder = 0,direction = 0);</code><pre>
+
+	Function:
+		ConnectNodes
+	Description:
+		This will connect two nodes stored in memory, same rules as for AddNode(Ex), it won't be available in path calculations.
+		When you connect NodeID_one with NodeID_two it will automaticly connect the opposite, no distance suplying is needed as the XYZ are supplied at node creation.
+	Parameters:
+		NodeID_one and NodeID_two as NodeID's
+		AddToPathFinder - if set to 1 it will also make sure the graph will be updated so when searching for a route it will be added to the list.
+		direction - you can choose to only connect nodeID one with nodeID two (One_To_Two = 1) or to connect them together (BOTH = 0)
+	Returns:
+
+		Anything above or equal to 0 means success (the NodeOne[connectid] is retuned), else failure.
+	Note:
+		NEVER EVER set AddToPathFinder to 1 when a calculation is in progress! THAT IS YOUR OWN RESPOSIBILITY IF IT HAPPENS.
+
+</pre><code language="PAWN"> native NearestPlayerNode(playerid,Float:MaxDist=9999.99,IgnoreNodeID=(-1));</code><pre>
+
+	Function:
+		NearestPlayerNode
+	Description:
+		This function will get the closest player node, if you used AddNode(Ex) this nodes will also be considered.
+	Parameters:
+		playerid - the playerid to count from
+		MaxDist - the maximal distance to search from the player
+		IgnoreNodeID - this node ID will not be returned as the closest one, it will be ignored in the search.
+	Returns the closest nodeID, -1 if no node Id is found in range
+
+</pre><code language="PAWN"> native NearestNodeFromPoint(Float:X,Float:Y,Float:Z,Float:MaxDist=9999.99,IgnoreNodeID=(-1));</code><pre>
+
+	Function:
+		NearestNodeFromPoint
+	Description:
+		Same as NearestPlayerNode, but here you can supply an point instead of an playerid
+	Parameters:
+		XYZ - the position of the point to search from
+		MaxDist - the maximal distance to search from the player
+		IgnoreNodeID - this node ID will not be returned as the closest one, it will be ignored in the search.
+	Returns the closest nodeID, -1 if no node Id is found in range
+
+</pre><code language="PAWN"> native WriteNodesToFile(filename[]);</code><pre>
+
+	Function:
+		WriteNodesToFile
+	Description:
+		Write all nodes, connections, contents of the memory into an loadable file,
+		can be used by ReadNodesFromFile later.
+	Parameters:
+		filename -	the "path/filename.extension" to store the information in,
+					note that if you want to make a file in the scriptfiles folder you need to supply:
+					WriteNodesToFile("scriptfiles/your.file.name");
+	Returns 1 on success, 0 on failure.
+
+</pre><code language="PAWN"> native ReadNodesFromFile(filename[]);</code><pre>
+
+	Function:
+		ReadNodesFromFile
+	Description:
+		Read all nodes, connections, contents of the file into the memory,
+		This function will automaticly create nodes, connect them, create the virtual graph to search paths on
+		after it has been loaded into the memory.
+	Parameters:
+		filename -	the "path/filename.extension" to read the information from,
+					note that if you want to read a file in the scriptfiles folder you need to supply:
+					ReadNodesFromFile("scriptfiles/your.file.name");
+	Warning:
+		It is not recommended to use this funcion, use at your own risk.
+		The plugin calls this function only at server startup, however I have included it for you.
+		You still can make aditional nodes with it (if you analyse the project source code correctly, you will know what I mean)
+	Returns 1 on success, 0 on failure.
+
+</pre><code language="PAWN"> native GetNodePos(NodeID,&Float:X,&Float:Y,&Float:Z);</code><pre>
+
+	Function:
+		GetNodePos
+	Description:
+		Get the XYZ position of the supplied NodeID
+	Parameters:
+		NodeID - The NodeID to get the XYZ from
+		(returns) X Y Z - The XYZ positions.
+	Returns 0 on failure (Out Of Range?), -1 if node doesn't exist, 1 on success.
+
+</pre><code language="PAWN"> native CalculatePath(Start,End,routeID = 0);</code><pre>//Threaded calculating, everything done here will be added to an Queue
+
+	Function:
+		CalculatePath
+	Description:
+		Get the XYZ position of the supplied NodeID
+	Parameters:
+		Start - The start NodeID
+		End - the destination NodeID
+		routeID (optional) - [custom integer supply] Here you can specify an integer value that will be passed
+		to the callback, along with the calculated path information, for example the PlayerID.
+	Note:
+		if you will be using the routeID parameter for recognizing routes, make sure they all are unique,
+		once started route search cannot be aborted and will just be queued and the callback will still be called.
+
+		This function is Threaded, this means that if the CalculatePath search takes 3 seconds, it won't lagg your server.
+		Your server will continue to work normally.
+
+		Only the callback in the script which calls the plugin will get executed with this, if you do CalculatePath in Script1,
+		and have your callback in Script2 then it won't get executed
+
+		Returns always 1.
+
+</pre><code language="PAWN"> native IsNodeIntersection(NodeID);</code><pre>
+
+	Function:
+		IsNodeIntersection
+	Description:
+		Check if a node has 3 or more connections
+	Parameters:
+		NodeID - The ID of the node
+	Return 1 if true, 0 if false, -1 if node doesn't exist.
+
+</pre><code language="PAWN"> native Float:GetAngleBetweenNodes(NodeID_one,NodeID_middle_aka_two,NodeID_three);</code><pre>
+
+	Function:
+		GetAngleBetweenNodes (Returns Float)
+	Description:
+		Gets the angle between 3 nodes (2 connections/lines).
+	Parameters:
+		NodeID* - The ID of the node
+	Return 0.0 if one of the three nodes doesn't exist
+
+</pre><code language="PAWN"> native GetConnectedNodes(NodeID);</code><pre>
+
+	Function:
+		GetConnectedNodes
+	Description:
+		returns the amount of other nodes that are connected to this node, max is 5
+	Parameters:
+		NodeID* - The ID of the node
+	Returns amount of nodes connected (0 to 5), on failure -1.
+
+</pre><code language="PAWN"> native GetNextEmptyNodeID();</code><pre>
+
+	Function:
+		GetNextEmptyNodeID
+	Description:
+		returns the closest empty node ID (closest starting from 0 to up);
+	Note:
+		Example:
+
+				 new id = GetNextEmptyNodeID();
+				 if(id != -1)AddNodeEx(id,X,Y,Z);
+
+				 However this example results in:
+
+				 AddNode(X,Y,Z);
+		Returns -1 if no more available node slots.
+
+</pre><code language="PAWN"> native GetQueueSize();</code><pre>
+
+	Function:
+		GetQueueSize
+	Description:
+		gets the size of all queued path calculations to do.
+	Returns -1 if the vector was locked when tried to access (Threading crash prevention), else it returns the vector size.
+
+</pre><code language="PAWN"> native GetConnectedNodeID(NodeID,ConnectID);</code><pre>
+
+	Function:
+		GetConnectedNodeID
+	Description:
+		gets the ID of an connection to NodeID, -1 if ConnectID has no connection, connectid must be between 0 and (MAX_CONNECTIONS-1), however there is OFB prevention check.
+
+</pre><code language="PAWN"> native Float:GetConnectedNodeDistance(NodeID,ConnectID);</code><pre>
+
+	Function:
+		GetConnectedNodeDistance (Returns Float)
+	Description:
+		gets the distance to a connected node (ConnectID) from the selected node (NodeID).
+
+</pre><code language="PAWN"> native Float:GetDistanceBetweenNodes(NodeID_one,NodeID_two);</code><pre>
+
+	Function:
+		GetDistanceBetweenNodes (Returns Float)
+	Description:
+		gets the distance between the two nodes (NOT VIA OTHER NODES, THIS JUST DOES THE X Y Z POSITION CALCULATION).
+
+</pre><code language="PAWN"> native IsNodeInPathFinder(NodeID);</code><pre>
+
+	Function:
+		IsNodeInPathFinder
+	Description:
+		Checks if NodeID is added to the routecalculator.
+	Returns -1 if the NodeID is invalid and 0 if node is not in the route calculator, 1 if yes.
+
+</pre><code language="PAWN"> native GetRouteArray(ID,destination[],size = sizeof(destination));</code><pre>
+
+	Function:
+		GetRouteArray
+	Description:
+		Stores an saved array with assigned ID to destination[]
+	Returns the amount of nodes in array at ID, Returns 0 if array is empty or ID doesn't exist.
+
+</pre><code language="PAWN"> native GetRouteAtPos(ID,Array_Pos,&amount_of_nodes=0);</code><pre>
+
+	Function:
+		GetRouteAtPos
+	Description:
+		Returns the NodeID in array[Array_Pos] at ID.
+		Optionally you can specify an variable to store the amount of nodes in it.
+
+</pre><code language="PAWN"> native StoreRouteArray(amount_of_nodes,array[]);</code><pre>
+
+	Function:
+		StoreRouteArray
+	Description:
+		Stores an array to the plugins vector memory, returns the ID you can use in GetRouteArray or DeleteArray.
+
+</pre><code language="PAWN"> native DeleteArray(ID);</code><pre>
+
+	Function:
+		DeleteArray
+	Description:
+		Remove contents of the memory at ID.
+
+</pre><code language="PAWN"> native AddExistingNodeToPathFinder(NodeID);</code><pre>
+
+	Function:
+		AddExistingNodeToPathFinder
+	Description:
+		Adds an created node to the routecalculator.
+	Returns -1 if the NodeID is invalid and 0 if node id does not exist or is already added, 1 on success.
+
+</pre><code language="PAWN"> native RemoveNode(NodeID);</code><pre>
+
+	Function:
+		RemoveNode
+	Description:
+		Deletes an node from the memory, to use in Write data, nodes loaded into the calculator won't be deleted, connections too.
+	Returns -1 if the NodeID is invalid and 0 if node id does not exist, 1 on success.
+
+</pre><code language="PAWN"> native DisconnectNodeFromNode(NodeIDOne,NodeIDTwo);</code><pre>
+
+	Function:
+		DisconnectNodeFromNode
+	Description:
+		Disconnects Node ID One from Two, please see RemoveNode for information about the calculator memory.
+	Returns -1 if the NodeID is invalid and 0 if node id does not exist, 1 on success.
+
+</pre><code language="PAWN"> native DisconnectAllFromNode(NodeID);</code><pre>
+
+	Function:
+		DisconnectAllFromNode
+	Description:
+		Disconnects all other nodes from NodeID, and NodeID from them.
+	Returns -1 if the NodeID is invalid and 0 if node id does not exist, 1 on success.
+
+</pre><code language="PAWN"> native DeleteNodeSystemAtNode(NodeID,array[],size = sizeof(array));</code><pre>
+
+	Function:
+		DeleteNodeSystemAtNode
+	Description:
+		Get ALL nodeIDs that are CONNECTED IN ANY WAY, ALSO VIA OTHER NODES to NodeID into the array[].
+		Usefull for deleting big-not-connected chunks of nodes.
+	Returns 0 on failure, the array size on success.
+
+</pre><code language="PAWN"> native GetNodeDirectionToConnect(NodeID,ConnectID);</code><pre>
+
+	Function:
+		GetNodeDirectionToConnect
+	Description:
+		Get the direction this node[connectid] is connected in,
+		0 means that :
+			connectid is connected to nodeid
+			nodeid is connected to connectid
+		1 means that:
+			nodeid is connected to connectid
+			connectid is NOT connected to nodeid
+		2 means that:
+			nodeid is NOT connected to connectid
+			connectid is connected to nodeid
+	Note:
+		Usefull for making 'left and right' road sides.
+	Returns -1 on failure.
+
+</pre><code language="PAWN"> native SetNodeDirectionToConnect(NodeID,ConectID,Direction);</code><pre>
+
+	Function:
+		SetNodeDirectionToConnect
+	Description:
+		See GetNodeDirectionToConnect, this SETS the direction manually.
+		It automaticly get the nodeID of 'ConectID' and sets the connection_direction to the good value.
+	Returns 0 on failure, 1 on success.
+
+</pre><code language="PAWN"> native NodeExists(NodeID);</code><pre>
+
+	Function:
+		NodeExists
+	Description:
+		Checks if the given nodeID exists in the memory.
+	Returns 0 if not, 1 if yes, -1 on failure.
+
+</pre><code language="PAWN"> native RemoveAllRouteIDFromQueue(routeid);</code><pre>
+
+	Function:
+		RemoveAllRouteIDFromQueue
+	Description:
+		Removes all pending calculations with 'routeid' from the queue.
+	Returns -1 if the Queue is locked/accessed, else it returns the amount of entries deleted.
+
+</pre><code language="PAWN"> forward GPS_WhenRouteIsCalculated(routeid,node_id_array[],amount_of_nodes,distance);>//Every processed Queue will be called here
+</code><pre>
+	Called when a path finding calculation is done.
+
+	routeid - the id you specified for recognition of calls
+	node_id_array -	this array is up to 1792 cells long
+					it is build from the following information:
+
+					node_id_array[0] ... node_id_array[1791] -
+						all points (Node ID's) on the route
+						in following order:
+							from start, to end
+	amount_of_nodes - this is the amount of nodes the total path is, is set to 0 when it's impossible to calculate the route.
+	distance - the total distance all nodes take, rounded to an integer, is -1 if it's impossible to calculate the route.
+	so you can do:
+	public GPS_WhenRouteIsCalculated(routeid,node_id_array[],amount_of_nodes,distance)
+	{
+		for(new i = 0; i < amount_of_nodes; ++i)
+		{
+			printf("Point(%d)=NodeID(%d)",i,node_id_array[i]);
+		}
+		return 1;
+	}
+
+</pre><code language="PAWN">forward OnPlayerClosestNodeIDChange(playerid,old_NodeID,new_NodeID);</code><pre>
+
+	Called when a player's closest nodeID changes.
+
+	playerid - the id of the player
+	old_NodeID and new_NodeID - the node ID's, old and new.
+		new_NodeID is 'now' the closest node ID.
+
+
+</pre><code language="PAWN"> native GetGPSdatVersion();</code><pre>
+
+	Function:
+		GetGPSdatVersion
+	Description:
+		Gets the file version of GPS.dat
+	Returns -1 if getting the GPS.dat version failed, else it returns the version number, this function is only available since package 162
+
+</pre><code language="PAWN"> native GetPluginVersion();</code><pre>
+
+	Function:
+		GetPluginVersion
+	Description:
+		Gets the plugin version
+	Returns the plugin version, this function is only available since package 162
+
+</pre><code language="PAWN"> stock GetIncludeVersion();</code><pre>
+
+	Function:
+		GetIncludeVersion
+	Description:
+		Gets the include file version
+	Returns the inclde file version, this function is only available since package 162
+</pre>

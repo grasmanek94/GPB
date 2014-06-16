@@ -1,0 +1,36 @@
+#summary What is the drifting angle?
+= Introduction =
+<table cellpadding="6" cellspacing="0" border="0" width="100%">
+<tbody><tr>
+<td class="alt2" style="border: 1px solid #C2C2C2; font-size: 8pt;">
+			
+<div>
+Quote from <strong>Wikipedia</strong>
+</div>
+<div style="font-style:italic">
+Drifting refers to a driving technique and to a motorsport where the driver intentionally over steers, causing loss of traction in the rear wheels through turns, while maintaining vehicle control and a high exit speed. A car is drifting when the rear <a href="http://en.wikipedia.org/wiki/Slip_angle">slip angle</a> is greater than the front slip angle prior to the corner apex, and the front wheels are pointing in the opposite direction to the turn (e.g. car is turning left, wheels are pointed right or vice versa), and the driver is controlling these factors. As a motor sport, professional drifting competitions are held worldwide. Drift racing challenges drivers to navigate a course in a sustained sideslip by exploiting coupled nonlinearities in the tire force response.
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+
+== The Drifting Angle (Slip Angle made easy) ==
+
+The drifting angle is nothing more than the angle of heading substracted by the actual angle of the car and taking the absolute value of it.
+
+Look at this picture:
+
+http://img200.imageshack.us/img200/3235/driftangle.png
+
+The yellow icon in the middle represents a car,
+it is pointing to the upper right direction.
+
+Each area is numbered (1 - 4) and represents an angle,
+also you see two green lines and one blue line.
+The blue line is the direction the car is heading to, it differs from the pointing direction of the car, this can be seen as a drift.
+
+If we know that the car is pointing on the green line from 3 to 1
+and is heading with the blue line then area one (1) is our Drift (aka slip) angle.
+
+Now if we know what the slip angle is we can give our racers some points and let us decide the difficulty with the help of DriftSet_MinimalAngle.

@@ -1,0 +1,64 @@
+#summary How to use DriftGet_MinimalSpeed
+
+= DriftGet_MinimalSpeed=
+
+With DriftGet_MinimalSpeed you can get the minimal needed speed for a drift (in km/h).
+
+== The Code ==
+<code language="PAWN">
+native DriftGet_MinimalSpeed(&Float:MinimalSpeed,playerid = (0));</code>
+
+== Syntax ==
+||Parameter||Type||Description||
+||MinimalSpeed||(Return Variable)Float||The amount of speed in km/h||
+||playerid||Integer||From what playerid it should get the minimal speed? -1 is invalid here||
+
+||Returns||This function does not return a specific value||
+
+== Usage ==
+
+{{{
+public OnFilterScriptInit()
+{
+	new Float:Speed;//declare a float variable
+
+	DriftGet_MinimalSpeed(Speed);
+	//Above code will get the minimal drifting
+	//speed from player with id 0 and pass it
+	//to the variable 'Speed'
+	
+	DriftGet_MinimalSpeed(Speed,45);
+	//Above code will get the minimal drifting
+	//speed from player with id 45 and pass it
+	//to the variable 'Speed'
+
+	#define MAX_PLAYERS (500)
+	new Float:AllSpeed[MAX_PLAYERS];//declare a new float array
+	for(new i; i < MAX_PLAYERS; ++i)
+	{
+		DriftGet_MinimalSpeed(AllSpeed[i],i);
+	}	
+	//Above code will get the minimal drifting
+	//speed from all players and pass it
+	//to the array 'AllSpeed'
+
+	//now let's check if all players have the same
+	//minimal speed set
+
+	new IsEverybodySynced = 1;//declare a new variable and set it to 1
+	for(new i; i < MAX_PLAYERS-1; ++i)
+	{
+		if(AllSpeed[i] != AllSpeed[i+1])
+		{
+			IsEverybodySynced = 0;//Not everybody has the same minimal speed
+			break;//get out of the for loop, we got 'what we want'
+		}
+	}
+
+	if(IsEverybodySynced == 0)
+	{
+		print("Not everybody has the same minimal speed! Consider resychronizing it.");
+	}
+	return 1;
+}
+}}}

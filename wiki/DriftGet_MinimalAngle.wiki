@@ -1,0 +1,52 @@
+#summary How to use DriftGet_MinimalAngle
+
+= DriftGet_MinimalAngle =
+
+With DriftGet_MinimalAngle you can get the minimal needed drift angle (in degrees).
+
+== The Code ==
+<code language="PAWN">
+native DriftGet_MinimalAngle(&Float:MinimalAngle,playerid = (0));</code>
+
+== Syntax ==
+||Parameter||Type||Description||
+||MinimalAngle||(Return Value)Float||The amount of degrees||
+||playerid||Integer||The player to get from, -1 cannot be used here||
+
+||Returns||This function does not return a specific value||
+
+== Usage ==
+
+<code language="PAWN">
+public OnPlayerDriftStart(playerid)
+{
+	DriftSet_MinimalAngle(12.5,playerid);
+	//Above code will set the minimal drifting
+	//angle of 12.5 degrees for playerid
+	return 1;
+}
+
+public OnPlayerDriftUpdate(playerid,value,combo,flagid,Float:distance,Float:speed)
+{
+	if(combo % 50 == 0)
+	//check if dividing combo by 50
+	//as many as possible leaves us with rest of 0
+	//example: 150-50 = 100, 100-50 = 50, 50-50 = 0 so we get rest of 0.
+	//example two: 143-50 = 93, 93 - 50 = 43, rest is 43, it is not equal to 0
+	//note: why? -> 43 is not dividable by 50 so it is the remaining rest!
+	{
+	    new Float:minangle;
+		//declare new variable
+	    DriftGet_MinimalAngle(minangle,playerid);
+		//Get the minimal angle of playerid
+	    if(minangle+0.5 < 65.0)
+	    //check if minimal angle + 0.5 degrees is less than 65.0
+		{
+			DriftSet_MinimalAngle(minangle+0.5,playerid);
+			//if yes add 0.5 degrees to the minimal angle to make it harder
+			//to drift
+		}
+	}
+	return 1;
+}
+</code>

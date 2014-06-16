@@ -1,0 +1,32 @@
+#summary Callback OnPlayerDriftStart
+
+= OnPlayerDriftStart =
+
+The OnPlayerDriftStart callback is called when a player meets all requirements{{{*}}} to start a drift.
+
+== The Code ==
+<code language="PAWN">
+forward OnPlayerDriftStart(playerid);</code>
+
+== Syntax ==
+||Parameter||Type||Description||
+||playerid||Integer||The playerid who starts drifting||
+
+||Returns||This callback does not return a specific value||
+
+== Usage ==
+
+<code language="PAWN">
+public OnPlayerDriftStart(playerid)
+{
+	SendClientMessage(playerid,0xFFFFFFFF,"You started drifting!");
+	return 1;
+}
+</code>
+
+
+{{{*}}} Please see:
+
+DriftSet_MinimalAngle
+
+DriftSet_MinimalSpeed 

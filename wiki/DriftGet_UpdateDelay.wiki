@@ -1,0 +1,37 @@
+#summary How to use DriftGet_UpdateDelay
+
+= DriftGet_UpdateDelay =
+
+With DriftGet_UpdateDelay you can get the amount of ticks between drift updates.
+
+== The Code ==
+<code language="PAWN">
+native DriftGet_UpdateDelay();</code>
+
+== Syntax ==
+||Parameter||Type||Description||
+||This function has no parameters|| || ||
+
+||Returns||The amount of ticks between drift updates||
+
+== Usage ==
+
+<code language="PAWN">
+public OnFilterScriptInit()
+{
+	new delay = 0;//new variable
+	
+	delay = DriftGet_UpdateDelay();//store the amount of ticks in the variable
+	
+	if(40 <= delay <= 50)//if delay is exactly or between 40 and 50
+	{
+		DriftSet_UpdateDelay(45);//set delay to 45
+	}
+	else
+	{
+	    DriftSet_UpdateDelay(100);//set delay to 100
+	}
+	return 1;
+}
+</code>
+This code will set the delay to 45 ticks or 100 ticks.

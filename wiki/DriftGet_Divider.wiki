@@ -1,0 +1,27 @@
+#summary How to use DriftGet_Divider
+
+= DriftGet_Divider =
+
+With DriftGet_Divider you can get the points divider for OnPlayerDriftUpdate and OnPlayerDriftEnd.
+
+== The Code ==
+<code language="PAWN">
+native DriftGet_Divider(playerid = (0));</code>
+
+== Syntax ==
+||Parameter||Type||Description||
+||playerid||Integer||The player to get the divider from, -1 is invalid||
+
+||Returns||Returns the divider||
+
+== Usage ==
+
+<code language="PAWN">
+public OnFilterScriptInit()
+{
+	new divider = DriftGet_Divider(0);
+	//The above code will get the divider
+	//of playerid 0
+	return 1;
+}
+</code>

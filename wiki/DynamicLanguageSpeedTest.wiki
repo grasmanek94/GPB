@@ -1,0 +1,129 @@
+#summary Speed Test of dynamic language library
+#labels Featured
+
+{{{
+//////////////////////////////////////////////////////////
+Code for test:
+//////////////////////////////////////////////////////////
+
+#define STR_DEF "YOFSGQBIFUXJAXYAYWDLAAUCARGMHLAYUCLWITWKOMMOFOHYSALFITMAKMSUCIATOEHSTXSMCRMTUTPISWNRDBMNVOPODBJCNJSEFFGPCTAVYUBVJYYUMCLYWCYTPMLJKPQFMRSURKGBNVXUNYOJXZNAXIHXXTQOMUJLSHACHQOUEDZAISPVEQHAIWOPBWEDTOEAJJVTVNIBGAKSRICRGBTFXKRTAMCPFXPQFLVEYJEWBJWCXIMXQCHWCSBUZRMJBVJDVPOLQUXULHDOVXZQSTSKJBUJSBEEMBCMSRLEMHENAYSIBCLTFTWJGBMPSMDLORWMHNWURIFMICIBDPMVQWLCNQKNLMUGGWSTGSXYNICVPXZBPPCJVBMJM"
+
+public OnFilterScriptInit()
+{
+	new File:fh = fopen("language/PL.txt",io_write);
+	new string[378];
+	new LastPercent = -1;
+	for(new i = 0; i < 32768; ++i)
+	{
+		for(new x = 0; x < 378; ++x)
+		{
+	  		string[x] = random(26)+'A';
+		}
+		string[377] = 0;
+	    fwrite(fh,sprintf("#%06x %s\r\n",i,string));
+	    printf("%.1f%%",float(i)/327.68);
+	}
+	fclose(fh);
+	fh = fopen("language/EN.txt",io_write);
+	new string[378];
+	new LastPercent = -1;
+	for(new i = 0; i < 32768; ++i)
+	{
+		for(new x = 0; x < 378; ++x)
+		{
+	  		string[x] = random(26)+'A';
+		}
+		string[377] = 0;
+	    fwrite(fh,sprintf("#%06x %s\r\n",i,string));
+	    printf("%.1f%%",float(i)/327.68);
+	}
+	fclose(fh);
+	/*
+		scriptfiles/language/PL.txt:
+		
+		#cmd.tp-tp.help POMOC Uzycia Komendy /tp
+		#cmd.tp-tp.fail Nie mozna sie teleportowac!
+	*/
+    LoadTranslation(LANG_PL);
+ 	/*
+		scriptfiles/language/EN.txt:
+
+		#cmd.tp-tp.help HELP with using command /tp
+		#cmd.tp-tp.fail Cannot teleport!
+	*/
+    LoadTranslation(LANG_EN);
+
+	new tempstr[2][MAX_OUTPUT_SIZE];
+	printf("\r\nPL: %s\r\nEN: %s\r\n",TranslateTextRet(LANG_PL,"#00514A"),TranslateTextRet(LANG_EN,"#00514A"));
+	TranslateText(LANG_PL,"#00514A",tempstr[0]);
+	TranslateText(LANG_EN,"#00514A",tempstr[1]);
+	printf("\r\nPL: %s\r\nEN: %s\r\n",tempstr[0],tempstr[1]);
+	
+	new now,end;
+	now = tickcount();
+	for(new i = 0; i < 10000; ++i)
+	{
+	    sprintf("XX|%s|XX",TranslateTextRet(LANG_PL,"#00514A"));
+	}
+	end = tickcount();
+	printf("Total time taken for 'TranslateTextRet PL' = %d ms | 1x = %.5f ms",end-now,(float(end)-float(now))/10000.0);
+	now = tickcount();
+	for(new i = 0; i < 10000; ++i)
+	{
+	     sprintf("XX|%s|XX",TranslateTextRet(LANG_EN,"#00514A"));
+	}
+	end = tickcount();
+	printf("Total time taken for 'TranslateTextRet EN' = %d ms | 1x = %.5f ms",end-now,(float(end)-float(now))/10000.0);
+	now = tickcount();
+	for(new i = 0; i < 10000; ++i)
+	{
+	    TranslateText(LANG_PL,"#00514A",tempstr[0]);
+	    sprintf("XX|%s|XX",tempstr[0]);
+	}
+	end = tickcount();
+	printf("Total time taken for 'TranslateText PL' = %d ms | 1x = %.5f ms",end-now,(float(end)-float(now))/10000.0);
+    now = tickcount();
+	for(new i = 0; i < 10000; ++i)
+	{
+	    TranslateText(LANG_EN,"#00514A",tempstr[0]);
+	    sprintf("XX|%s|XX",tempstr[0]);
+	}
+	end = tickcount();
+	printf("Total time taken for 'TranslateText EN' = %d ms | 1x = %.5f ms",end-now,(float(end)-float(now))/10000.0);
+    now = tickcount();
+	for(new i = 0; i < 10000; ++i)
+	{
+	    sprintf("XX|%s|XX",STR_DEF);
+	}
+	end = tickcount();
+	printf("Total time taken for 'STR_DEF' = %d ms | 1x = %.5f ms",end-now,(float(end)-float(now))/10000.0);
+	now = tickcount();
+	for(new i = 0; i < 10000; ++i)
+	{
+	    sprintf("XX||XX");
+	}
+	end = tickcount();
+	printf("Total time taken for 'Just SPRINTF' = %d ms | 1x = %.5f ms",end-now,(float(end)-float(now))/10000.0);
+
+	return 1;
+}
+
+//////////////////////////////////////////////////////////
+Test Results:
+//////////////////////////////////////////////////////////
+PL: RQFGQBFXLWPBBEBQYAIRRHQUCYXJUDXIHUSOIUYXXEZUPPIHHCIPADOOYXPRVZJYJNZHNFGOTZYRDTPLKGRHSAGSSWORIQSMOJPRGNZSNWHWQVZATWCOFFBIELRFVRZYWSRTCBYVNEMLRZKKZNLIFOFOWVGVRURAHTRKTECOEWKUEHTXFREJZEBXZDWDQJAXILBGTFEVJEHPLANOTLMNPPCFCCKNATHPTOSHSPKPSZUDFLMZFTGCNQPCRTYQPKZCSSTFSAGBDVKCQCVGVGIAKAIWQNZYKLGSGMNIYHYRACJTALRTOXDTLYJPRXWTYVQPLERZTWKDFLUNNZEWXYAAGHJZHXZDRRKNXXDKZUMFJPLSIIKNEUDDNDPMD
+
+EN: RQFGQBFXLWPBBEBQYAIRRHQUCYXJUDXIHUSOIUYXXEZUPPIHHCIPADOOYXPRVZJYJNZHNFGOTZYRDTPLKGRHSAGSSWORIQSMOJPRGNZSNWHWQVZATWCOFFBIELRFVRZYWSRTCBYVNEMLRZKKZNLIFOFOWVGVRURAHTRKTECOEWKUEHTXFREJZEBXZDWDQJAXILBGTFEVJEHPLANOTLMNPPCFCCKNATHPTOSHSPKPSZUDFLMZFTGCNQPCRTYQPKZCSSTFSAGBDVKCQCVGVGIAKAIWQNZYKLGSGMNIYHYRACJTALRTOXDTLYJPRXWTYVQPLERZTWKDFLUNNZEWXYAAGHJZHXZDRRKNXXDKZUMFJPLSIIKNEUDDNDPMD
+
+PL: RQFGQBFXLWPBBEBQYAIRRHQUCYXJUDXIHUSOIUYXXEZUPPIHHCIPADOOYXPRVZJYJNZHNFGOTZYRDTPLKGRHSAGSSWORIQSMOJPRGNZSNWHWQVZATWCOFFBIELRFVRZYWSRTCBYVNEMLRZKKZNLIFOFOWVGVRURAHTRKTECOEWKUEHTXFREJZEBXZDWDQJAXILBGTFEVJEHPLANOTLMNPPCFCCKNATHPTOSHSPKPSZUDFLMZFTGCNQPCRTYQPKZCSSTFSAGBDVKCQCVGVGIAKAIWQNZYKLGSGMNIYHYRACJTALRTOXDTLYJPRXWTYVQPLERZTWKDFLUNNZEWXYAAGHJZHXZDRRKNXXDKZUMFJPLSIIKNEUDDNDPMD
+
+EN: RQFGQBFXLWPBBEBQYAIRRHQUCYXJUDXIHUSOIUYXXEZUPPIHHCIPADOOYXPRVZJYJNZHNFGOTZYRDTPLKGRHSAGSSWORIQSMOJPRGNZSNWHWQVZATWCOFFBIELRFVRZYWSRTCBYVNEMLRZKKZNLIFOFOWVGVRURAHTRKTECOEWKUEHTXFREJZEBXZDWDQJAXILBGTFEVJEHPLANOTLMNPPCFCCKNATHPTOSHSPKPSZUDFLMZFTGCNQPCRTYQPKZCSSTFSAGBDVKCQCVGVGIAKAIWQNZYKLGSGMNIYHYRACJTALRTOXDTLYJPRXWTYVQPLERZTWKDFLUNNZEWXYAAGHJZHXZDRRKNXXDKZUMFJPLSIIKNEUDDNDPMD
+
+
+Total time taken for 'TranslateTextRet PL' = 143 ms | 1x = 0.01439 ms
+Total time taken for 'TranslateTextRet EN' = 147 ms | 1x = 0.01520 ms
+Total time taken for 'TranslateText PL' = 143 ms | 1x = 0.01360 ms
+Total time taken for 'TranslateText EN' = 147 ms | 1x = 0.01520 ms
+Total time taken for 'STR_DEF' = 44 ms | 1x = 0.00400 ms
+Total time taken for 'Just SPRINTF' = 31 ms | 1x = 0.00319 ms
+}}}

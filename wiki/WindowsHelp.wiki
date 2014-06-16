@@ -1,0 +1,15 @@
+#summary Windows Help
+
+= DLL ERRORS =
+
+To run the plugins on a windows SA:MP server 
+you need to make sure you have installed all required depencies.
+If you encounter any errors please try installing:
+
+-Microsoft Visual C++ 2008 Redistributable Package
+
+-Microsoft Visual C++ 2010 Redistributable Package
+
+
+
+If this still doesn't work try downloading the missing DLL's (search on google) and put them in the directory where you have your samp-server.exe.

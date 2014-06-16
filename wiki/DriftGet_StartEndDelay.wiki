@@ -1,0 +1,28 @@
+#summary How to use DriftGet_StartEndDelay
+
+= DriftGet_StartEndDelay =
+
+With DriftGet_StartEndDelay you can get the maximal time (in ticks) to resume a drift before it is canceled.
+
+== The Code ==
+<code language="PAWN">
+native DriftGet_StartEndDelay(playerid = (0));</code>
+
+== Syntax ==
+||Parameter||Type||Description||
+||playerid||Integer||The playerid to get his StartEndDelay, -1 is invalid here||
+
+||Returns||Returns the amount of ticks for the players StartEndDelay||
+
+== Usage ==
+
+<code language="PAWN">
+public OnFilterScriptInit()
+{
+	new playerdelay = 0;
+	playerdelay = DriftGet_StartEndDelay(0);
+	//Above code will get the drifting delay
+	//for playerid 0and store it in 'playerdelay'
+	return 1;
+}
+</code>

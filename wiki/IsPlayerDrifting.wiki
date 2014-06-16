@@ -1,0 +1,32 @@
+#summary How to use IsPlayerDrifting
+
+= IsPlayerDrifting =
+
+With IsPlayerDrifting you can get the status if the player is drifting or not.
+
+== The Code ==
+<code language="PAWN">
+native IsPlayerDrifting(playerid);</code>
+
+== Syntax ==
+||Parameter||Type||Description||
+||playerid||Integer||The player to get the Drifting info from||
+
+||Returns||Returns player long drifting status, 1 if drift started, 0 if OnPlayerDriftEnd has been already called||
+
+== Usage ==
+
+<code language="PAWN">
+public OnPlayerUpdate(playerid)
+{
+	if(IsPlayerDrifting(playerid) == 1)
+	{
+	    print("player %d is in a drift!",playerid);
+	}
+	else
+	{
+	    //player is not in a drift
+	}
+	return 1;
+}
+</code>

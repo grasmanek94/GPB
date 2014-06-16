@@ -1,0 +1,27 @@
+#summary Information on Drift_Private_ChangeState
+<div style="margin:20px; margin-top:5px; ">
+<div class="smallfont" style="margin-bottom:2px">Note:</div>
+<table cellpadding="6" cellspacing="0" border="0" width="100%">
+<tr>
+<td class="alt2" style="border: 1px solid #C2C2C2; font-size: 15pt;">
+<div style="font-style:italic">This function has been removed in revision 21</div>
+			
+</td>
+</tr>
+</table>
+= Drift_Private_ChangeState =
+
+The Drift_Private_ChangeState function is used internally by the plugin to update the vector list of players,
+
+it is not recomended to use this function on your own except if you know what you are doing.
+
+== The Code ==
+<code language="PAWN">
+native Drift_Private_ChangeState(playerid,newstate);</code>
+
+== Syntax ==
+||Parameter||Type||Description||
+||playerid||Integer||The playerid who changed state||
+||newstate||Integer||The new state of the player||
+
+||Returns||This function returns values from -1 to 3 depending on failure/success||

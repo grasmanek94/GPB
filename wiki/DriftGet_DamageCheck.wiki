@@ -1,0 +1,30 @@
+#summary How to use DriftGet_DamageCheck
+
+= DriftGet_DamageCheck =
+
+With DriftGet_DamageCheck you can get the option to check for damage while drifting.
+
+== The Code ==
+<code language="PAWN">
+native DriftGet_DamageCheck(playerid = (0),&Float:MaxHealthLoose = 0.0);</code>
+
+== Syntax ==
+||Parameter||Type||Description||
+||playerid||Integer||The player to get the DamageCheck from, -1 is invalid||
+||MaxHealthLoose||(Return Value)Float||Assigns a variable the max health points thay may be lost per hit||
+
+||Returns||Returns the enabled status, 0 if disable, 1 if enabled||
+
+== Usage ==
+
+<code language="PAWN">
+public OnFilterScriptInit()
+{
+	new Float:MaxLoose;
+    new status = DriftGet_DamageCheck(4,MaxLoose);
+    //gets the status of the damage check on playerid 4
+    //and assigns MaxLoose the maximal health that has been set
+    //to may loose per hit
+	return 1;
+}
+</code>

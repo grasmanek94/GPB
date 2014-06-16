@@ -1,0 +1,34 @@
+#summary How to use DriftSet_MinimalAngle
+
+= DriftSet_MinimalAngle =
+
+Note: It is recomended that you read the 'DriftingAngle' article to understand this function better.
+
+With DriftSet_MinimalAngle you can set the minimal needed drift angle (in degrees).
+
+== The Code ==
+<code language="PAWN">
+native DriftSet_MinimalAngle(Float:MinimalAngle,playerid = (-1));</code>
+
+== Syntax ==
+||Parameter||Type||Description||
+||MinimalAngle||Float||The amount of degrees||
+||playerid||Integer||The player to set for, use -1 to set for all players||
+
+||Returns||This function does not return a specific value||
+
+== Usage ==
+
+<code language="PAWN">
+public OnFilterScriptInit()
+{
+	DriftSet_MinimalAngle(12.5);
+	//Above code will set the minimal drifting
+	//angle of 12.5 degrees for all players
+
+	DriftSet_MinimalAngle(25.0,12);
+	//Above code will set the minimal drifting
+	//angle of 25.0 degrees for player with id 12
+	return 1;
+}
+</code>

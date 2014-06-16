@@ -1,0 +1,63 @@
+=Index=
+
+==Set Functions==
+
+ * Set
+   # Drift_SetDriftMaxHealthLoose
+   # Drift_SetBackwardsCheck
+   # Drift_SetPlayerCheck
+   # Drift_SetCheckForFlags
+   # Drift_SetGlobalCheck
+   # DriftSet_DamageCheck
+   # DriftSet_Divider
+   # DriftSet_StartEndDelay
+   # DriftSet_MinimalAngle
+   # DriftSet_MinimalSpeed
+   # DriftSet_UpdateDelay
+
+==Get Functions==
+
+ * Get
+   # Drift_GetCheckForFlags
+   # DriftGet_MinimalAngle
+   # DriftGet_MinimalSpeed
+   # DriftGet_Divider
+   # DriftGet_UpdateDelay
+   # DriftGet_StartEndDelay
+   # DriftGet_DamageCheck
+   # Drift_GetGlobalCheck
+   # Drift_GetPlayerCheck
+   # Drift_GetBackwardsCheck
+   # Drift_GetDriftMaxHealthLoose
+
+==Callbacks==
+
+ * Publics
+   # OnPlayerDriftEnd
+   # OnPlayerDriftStart
+   # OnPlayerDriftUpdate
+
+==Flag Operations==
+
+ * Flag
+   # [Drift_AddFLAG]
+   # [Drift_MoveFLAG]
+   # [Drift_DeleteFLAG]
+   # [Drift_DisableFLAG]
+   # [Drift_EnableFLAG]
+
+==Model Manipulation==
+
+ * Model
+   # [Drift_ResetDefaultModelList]
+   # [Drift_ClearModelList]
+   # [Drift_DisallowModel]
+   # [Drift_AllowModel]
+
+==Misc==
+
+ * Other
+   # [IsPlayerDrifting_precise]
+   # IsPlayerDrifting
+   # DriftingAngle
+   # Drift_Private_ChangeState

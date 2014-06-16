@@ -1,0 +1,5 @@
+#summary Anti Cheat plugin
+= AC Plugin =
+
+The AntiCheat plugin
+Newest version: 25

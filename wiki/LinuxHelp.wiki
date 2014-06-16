@@ -1,0 +1,11 @@
+#summary Linux Help
+
+= GLIBCXX ERRORS =
+
+If you cannot run the plugin on linux ("GLIBCXX...blablabla"), see this: http://www.linuxquestions.org/questions/linux-newbie-8/usr-lib-libstdc-so-6-version-%60glibcxx_3-4-9-not-found-required-by-example1-604625/ 
+
+so download the library (libstdc++-4.3.2-7.i386.rpm): http://rpm.pbone.net/index.php3/stat/4/idpl/16749609/dir/fedora_10/com/libstdc++-4.3.2-7.i386.rpm.html 
+
+and install it. 
+
+How to install?: http://www.ozzu.com/unix-linux-forum/how-install-rpm-files-linux-t32377.html 

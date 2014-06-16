@@ -1,0 +1,31 @@
+#summary How to use Drift_EnableFLAG
+
+= [Drift_EnableFLAG] =
+
+The [Drift_EnableFLAG] function can enable an disabled FLAG.
+
+
+== The Code ==
+<code language="PAWN">
+native [Drift_EnableFLAG](flagid);
+</code>
+
+== Syntax ==
+||Parameter||Type||Description||
+||flagid||Integer||the flagid to enable||
+
+||Returns||This function does not return a specific value||
+
+
+== Usage ==
+
+
+<code language="PAWN">
+public OnFilterScriptInit()
+{
+	new MyFlag = [Drift_AddFLAG](462.283,2576.455,953.235);
+	[Drift_DisableFLAG](MyFlag);
+	[Drift_EnableFLAG](MyFlag);
+    return 1;
+}
+</code>

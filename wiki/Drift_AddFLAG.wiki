@@ -1,0 +1,95 @@
+#summary How to use Drift_AddFLAG
+
+= [Drift_AddFLAG] =
+
+The [Drift_AddFLAG] function Creates a new FLAG.
+Flags are used to earn extra points for drifting as close as possible to them.
+Please see the video on how it works.
+Flags are processed in OnPlayerDriftUpdate.
+
+
+== The Code ==
+<code language="PAWN">
+native [Drift_AddFLAG](Float:X,Float:Y,Float:Z);
+</code>
+
+== Syntax ==
+||Parameter||Type||Description||
+||X||Float||The X position to create the FLAG on||
+||Y||Float||The Y position to create the FLAG on||
+||Z||Float||The Z position to create the FLAG on||
+
+||Returns||This function returns an flagid so you can manage it easily||
+
+
+== Usage ==
+
+
+<code language="PAWN">
+public OnFilterScriptInit()
+{
+	new MyFlag = [Drift_AddFLAG](462.283,2576.455,953.235);
+    return 1;
+}
+</code>
+
+== Coding it into scripts ==
+
+Example:
+{{{
+public OnGameModeInit()
+{
+	CreateObject(1270, -2431.905273, -607.968445, 133.104156, 0.0000, 0.0000, 0.0000);
+    Drift_AddFLAG(-2431.905273, -607.968445, 133.104156);
+
+	CreateObject(1270, -2471.645020, -496.794403, 104.574181, 0.0000, 0.0000, 0.0000);
+    Drift_AddFLAG(-2471.645020, -496.794403, 104.574181);
+
+	CreateObject(1270, -2620.171875, -497.509674, 71.466095, 0.0000, 0.0000, 0.0000);
+    Drift_AddFLAG(-2620.171875, -497.509674, 71.466095);
+
+	CreateObject(1270, -2406.182617, -422.425018, 85.114494, 0.0000, 0.0000, 0.0000);
+    Drift_AddFLAG(-2406.182617, -422.425018, 85.114494);
+
+	CreateObject(1270, -2335.805664, -458.153107, 80.349075, 0.0000, 0.0000, 0.0000);
+    Drift_AddFLAG(-2335.805664, -458.153107, 80.349075);
+
+	CreateObject(1270, -2379.793945, -384.753448, 76.872963, 0.0000, 0.0000, 0.0000);
+    Drift_AddFLAG(-2379.793945, -384.753448, 76.872963);
+
+	CreateObject(1270, -2671.451172, -428.640320, 31.540670, 0.0000, 0.0000, 0.0000);
+    Drift_AddFLAG(-2671.451172, -428.640320, 31.540670);
+
+	CreateObject(1270, -2676.716553, -511.566620, 18.553450, 0.0000, 0.0000, 0.0000);
+    Drift_AddFLAG(-2676.716553, -511.566620, 18.553450);
+	return 1;
+}
+
+public OnPlayerDriftUpdate(playerid,value,combo,flagid,Float:distance,Float:speed)
+{
+
+	if(flagid != -1)
+	{
+        pointsnow = floatround(300/distance);
+        Drift_VAR[playerid][FlagP]+= pointsnow;
+        format(s[0], 128, "~r~]~b~FLAG CATCH~r~]~w~~n~+%d",Drift_VAR[playerid][FlagP]);
+        TextDrawSetString(Drift_VAR[playerid][PlayerTextDraw][2], s[0]);
+        if(Drift_VAR[playerid][lastflag] != flagid)
+		{
+			TextDrawShowForPlayer(playerid,Drift_VAR[playerid][PlayerTextDraw][2]);
+		}
+	}
+	else
+	{
+	    if(Drift_VAR[playerid][lastflag] != flagid)
+		{
+			if(Drift_VAR[playerid][TimerDD] != -1)
+			{
+				KillTimer(Drift_VAR[playerid][TimerDD]);
+			}
+			Drift_VAR[playerid][TimerDD] = SetTimerEx("HideTextDraw",2000,0,"i",playerid);
+        }
+	}
+	return 1;
+}
+}}}

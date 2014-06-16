@@ -1,0 +1,74 @@
+#summary How to use Drift_ResetDefaultModelList
+
+= [Drift_ResetDefaultModelList] =
+
+With [Drift_ResetDefaultModelList] you can reset the default drifting model id list.
+
+== The Code ==
+<code language="PAWN">
+native [Drift_ResetDefaultModelList]();</code>
+
+== Syntax ==
+||Parameter||Type||Description||
+||This function has no parameters||||||
+
+||Returns||This function does not return a specific value||
+
+== Usage ==
+
+{{{
+public OnFilterScriptInit()
+{
+    Drift_ClearModelList();
+    //will disable all model ids to drift
+    Drift_ResetDefaultModelList();
+    //resets to the defaul list,
+    //ALL IDs will be enabled except this ones:
+    /*
+ 	448,
+	461,
+	462,
+	468,
+	481,
+	509,
+	521,
+	522,
+	581,
+	537,
+	538,
+	523,
+	417,
+	425,
+	447,
+	460,
+	469,
+	476,
+	487,
+	488,
+	497,
+	511,
+	512,
+	513,
+	519,
+	520,
+	548,
+	553,
+	563,
+	577,
+	592,
+	593,
+	430,
+	446,
+	452,
+	454,
+	472,
+	473,
+	453,
+	484,
+	493,
+	595,
+	464,
+    */
+	return 1;
+}
+}}}

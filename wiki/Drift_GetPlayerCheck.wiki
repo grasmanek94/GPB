@@ -1,0 +1,31 @@
+#summary How to use Drift_GetPlayerCheck
+
+= Drift_GetPlayerCheck =
+
+The Drift_GetPlayerCheck function gets the status of the checking for player drifts.
+
+
+== The Code ==
+<code language="PAWN">
+native Drift_GetPlayerCheck(playerid = (0));
+</code>
+
+== Syntax ==
+||Parameter||Type||Description||
+||playerid||Integer||The player to get the drift checking status from, -1 is invalid||
+
+||Returns||This function returns the status, enabled - 1, disabled - 0||
+
+
+== Usage ==
+
+
+<code language="PAWN">
+public OnFilterScriptInit()
+{
+    new status = Drift_GetPlayerCheck(4);
+    //above code will get the Drift Check
+    //status of playerid 4
+    return 1;
+}
+</code>
