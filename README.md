@@ -26,8 +26,8 @@ Please report any ideas and give feedback through github
 <tr><td><a href="http://forum.sa-mp.com/showthread.php?t=260298">FDLG</a></td><td>One of the fastest dialog processors around. Allows you to handle dialog responses faster and easier<td> 
 <tr><td><a href="http://forum.sa-mp.com/showthread.php?t=149482">Spolszczenie</a></td><td>Polskie spolszczenie wiekszosci funkcji SA-MP<td> 
 <tr><td><a href="http://forum.sa-mp.com/showthread.php?t=141580">GYXZ2P</a></td><td>Get XYZ Between 2 positions<td> 
-<tr><td><a href="https://gpb.googlecode.com/svn/trunk/includes/AccurateGTASpeed.inc">Accurate Speeds</a></td><td>An Include which will get the most possible accurate GTA speed<td> 
-<tr><td><a href="http://gpb.googlecode.com/svn/trunk/includes/VehicleMatrix.inc">GetVehicleMatrix-and-GetVehicleOffset</a></td><td>An Include which provides functionality for getting the vehicle matrix and rotations and offsets relative to rotations, more info <a href="http://forum.sa-mp.com/showthread.php?p=2586001#post2586001">here</a><td>
+<tr><td><a href="http://github.com/grasmanek94/GPB/">Accurate Speeds</a></td><td>An Include which will get the most possible accurate GTA speed<td> 
+<tr><td><a href="http://github.com/grasmanek94/GPB/">GetVehicleMatrix-and-GetVehicleOffset</a></td><td>An Include which provides functionality for getting the vehicle matrix and rotations and offsets relative to rotations, more info <a href="http://forum.sa-mp.com/showthread.php?p=2586001#post2586001">here</a><td>
 <tr><td><font size="4"><b>Maps</b></font></td><td></td> 
 <tr><td><a href="http://gz.pxf24.pl/Mappack_SA-MP.zip">(Direct Download) Mega Mappack</a></td><td>This mappack contains 416 nice racing maps.<td> 
 <tr><td><font size="4"><b>Applications</b></font></td><td></td> 
@@ -40,7 +40,6 @@ Please report any ideas and give feedback through github
 <tr><td><a href="http://forum.sa-mp.com/showthread.php?t=290800">GPS Test #2</a></td><td>GPS Plugin Performance test<td> 
 <tr><td><font size="4"><b>Discussions</b></font></td><td></td> 
 <tr><td><a href="http://forum.sa-mp.com/showthread.php?p=1464541">Advanced SA-MP GPS Plugin</a></td><td>Thus an early note of releasing the advanced GPS Plugin by me<td> 
-<tr><td><a href="http://forum.sa-mp.com/showthread.php?p=1370122">SA-MP Live</a></td><td>Why I never will use "SA-MP Live"<td> 
 <tr><td><font size="4"><b>SA-MP Client Modifications</b></font></td><td></td> 
 <tr><td><a href="http://forum.sa-mp.com/showthread.php?p=1239932">Custom GUI</a></td><td>Gamer_Z's Custom SAMP GUI<td> 
 <tr><td><font size="4"><b>Useful Links</b></font></td><td></td> 
