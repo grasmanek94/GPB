@@ -29,7 +29,6 @@ Please report any ideas and give feedback through github
 <tr><td><a href="http://github.com/grasmanek94/GPB/">Accurate Speeds</a></td><td>An Include which will get the most possible accurate GTA speed<td> 
 <tr><td><a href="http://github.com/grasmanek94/GPB/">GetVehicleMatrix-and-GetVehicleOffset</a></td><td>An Include which provides functionality for getting the vehicle matrix and rotations and offsets relative to rotations, more info <a href="http://forum.sa-mp.com/showthread.php?p=2586001#post2586001">here</a><td>
 <tr><td><font size="4"><b>Maps</b></font></td><td></td> 
-<tr><td><a href="http://gz.pxf24.pl/Mappack_SA-MP.zip">(Direct Download) Mega Mappack</a></td><td>This mappack contains 416 nice racing maps.<td> 
 <tr><td><font size="4"><b>Applications</b></font></td><td></td> 
 <tr><td><a href="http://forum.sa-mp.com/showthread.php?t=277309">LAN IP SCANNER</a></td><td>Allows you to see all the computers on your LAN network and their details<td> 
 <tr><td><a href="http://forum.sa-mp.com/showthread.php?t=305530">QuickAppLauncher</a></td><td>An example of a program which is useful for fast-program-shortcuts<td> 
