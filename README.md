@@ -45,3 +45,6 @@ Please report any ideas and give feedback through github
 <tr><td><a href="http://code.google.com/u/117818441040327495406/">Google Projects</a></td><td>My Google Code projects<td> 
 <tr><td><font size="4"><b>Other</b></font></td><td></td> 
 <tr><td><a href="https://github.com/grasmanek94/GPB/tree/master/Call%20of%20Duty%20Modern%20Warfare%203%20Console%20Enabler">Call of Duty Moderwn Warfare 3 Console Enabler (CoD_MW3_Console_Enabler)</a></td><td>This proxy dll basicly adds a hacked console to the game, try the command "map sp_paris_a" ;)<td> 
+
+
+[![Join the chat at https://gitter.im/grasmanek94/GPB](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/grasmanek94/GPB?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
