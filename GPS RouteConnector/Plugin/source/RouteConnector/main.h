@@ -1,5 +1,12 @@
 #pragma once
 
+#ifdef OS_WINDOWS
+	using namespace Concurrency;
+#else
+	using namespace tbb;
+	using namespace tbb::strict_ppl;
+#endif
+
 //no need to change the code in here at all.
 namespace Natives
 {
@@ -269,18 +276,18 @@ struct Callbacks
 
 cell				ProcessTick_amxaddr[5] =		{NULL,NULL,NULL,NULL,NULL};
 
-std::vector				<RouteData>						RouteVector;
-std::vector				<int>							RouteID;
-std::vector				<int>							PlayerLoopList;
-std::map				<AMX*, Callbacks>				rcp_amxinfo;
-std::vector				<RM>							RemoveNodes;
-boost::lockfree::queue	<QuedData*>						QueueVector;
-std::vector				<NodesInfoScanner>				Area[536][536];//160.801 Areas, -20.000 to 20.000 (40.000x40.000 = 1.600.000.000 square units), is an 100x100 units area with each unit holding nodes. (6000x6000 area, if all nodes spread evenly each area unit holds 38 nodes, not one big area with 35k nodes :p)
-boost::lockfree::queue	<PassData*>						PassVector;
-PassData*												LocalPass;
-NewLast													ChangeNode[MAX_PLAYERS];
-NodesInfo												xNode[MAX_NODES];
-ThreadNodesInfo											Thread_xNode[MAX_NODES];
+std::vector			<RouteData>						RouteVector;
+std::vector			<int>							RouteID;
+std::vector			<int>							PlayerLoopList;
+std::map			<AMX*, Callbacks>				rcp_amxinfo;
+std::vector			<RM>							RemoveNodes;
+concurrent_queue	<QuedData>						QueueVector;
+std::vector			<NodesInfoScanner>				Area[535][535];//160.801 Areas, -20.000 to 20.000 (40.000x40.000 = 1.600.000.000 square units), is an 100x100 units area with each unit holding nodes. (6000x6000 area, if all nodes spread evenly each area unit holds 38 nodes, not one big area with 35k nodes :p)
+concurrent_queue	<PassData>						PassVector;
+PassData											LocalPass;
+NewLast												ChangeNode[MAX_PLAYERS];
+NodesInfo											xNode[MAX_NODES];
+ThreadNodesInfo										Thread_xNode[MAX_NODES];
 
 std::atomic<unsigned int> QueueSize;
 

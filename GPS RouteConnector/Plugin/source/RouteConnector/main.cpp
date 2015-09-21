@@ -14,12 +14,7 @@
 #include "defines.h"
 
 //System
-
-#ifdef OS_WINDOWS
 #include <atomic>
-#else
-#include <cstdatomic>
-#endif
 
 #include <iostream>
 #include <fstream>
@@ -27,7 +22,7 @@
 #include <vector>
 #include <array>
 #include <algorithm>
-#include <boost/lockfree/queue.hpp>
+#include <concurrent_queue.h>
 #include <bitset>
 #include <list>
 #include <map>
@@ -85,7 +80,7 @@ PLUGIN_EXPORT bool PLUGIN_CALL Load( void **ppData )
 	void *BackgroundCalculator( void *unused )
 #endif
 {
-	QuedData			* RecievedData;
+	QuedData			RecievedData;
 	cell				CalculatedPathCost;
 	std::vector <cell>	CalculatedPath;
 	std::vector <cell>	PolygonTemp;
@@ -95,13 +90,13 @@ PLUGIN_EXPORT bool PLUGIN_CALL Load( void **ppData )
 
 	while(gIsThreadRunning)
     {
-		if(QueueVector.pop(RecievedData))
+		if(QueueVector.try_pop(RecievedData))
 		{
 			--QueueSize;
-			dgraph->findPath_r(Thread_xNode[RecievedData->start].NodeID ,Thread_xNode[RecievedData->end].NodeID,CalculatedPath,CalculatedPathCost);
+			dgraph->findPath_r(Thread_xNode[RecievedData.start].NodeID ,Thread_xNode[RecievedData.end].NodeID,CalculatedPath,CalculatedPathCost);
 			dgraph->reset();
 
-			if(RecievedData->CreatePolygon == 1)
+			if(RecievedData.CreatePolygon == 1)
 			{
 				if(CalculatedPath.size() > 3)
 				{
@@ -110,8 +105,8 @@ PLUGIN_EXPORT bool PLUGIN_CALL Load( void **ppData )
 					temp[0] = DPoint(Thread_xNode[CalculatedPath.at(0)].xPOS,Thread_xNode[CalculatedPath.at(0)].yPOS);
 					temp[1] = DPoint(Thread_xNode[CalculatedPath.at(1)].xPOS,Thread_xNode[CalculatedPath.at(1)].yPOS);
 
-					temp[2] = temp[0] - (function_r(temp[1] - temp[0]) * RecievedData->Width);
-					temp[3] = temp[0] + (function_r(temp[1] - temp[0]) * RecievedData->Width);
+					temp[2] = temp[0] - (function_r(temp[1] - temp[0]) * RecievedData.Width);
+					temp[3] = temp[0] + (function_r(temp[1] - temp[0]) * RecievedData.Width);
 
 					PolygonTemp.push_back(amx_ftoc(temp[2].X));
 					PolygonTemp.push_back(amx_ftoc(temp[2].Y));
@@ -124,7 +119,7 @@ PLUGIN_EXPORT bool PLUGIN_CALL Load( void **ppData )
 						temp[1] = DPoint(Thread_xNode[CalculatedPath.at(k+1)].xPOS,Thread_xNode[CalculatedPath.at(k+1)].yPOS);
 						temp[2] = DPoint(Thread_xNode[CalculatedPath.at(k-1)].xPOS,Thread_xNode[CalculatedPath.at(k-1)].yPOS);
 						
-						temp[3] = temp[0] + (function_r(function_u(temp[1] - temp[0]) - function_u(temp[2] - temp[0])) * RecievedData->Width);
+						temp[3] = temp[0] + (function_r(function_u(temp[1] - temp[0]) - function_u(temp[2] - temp[0])) * RecievedData.Width);
 						
 						PolygonTemp.push_back(amx_ftoc(temp[3].X));
 						PolygonTemp.push_back(amx_ftoc(temp[3].Y));
@@ -133,8 +128,8 @@ PLUGIN_EXPORT bool PLUGIN_CALL Load( void **ppData )
 					temp[0] = DPoint(Thread_xNode[CalculatedPath.at(CalculatedPath.size()-1)].xPOS,Thread_xNode[CalculatedPath.at(CalculatedPath.size()-1)].yPOS);
 					temp[1] = DPoint(Thread_xNode[CalculatedPath.at(CalculatedPath.size()-2)].xPOS,Thread_xNode[CalculatedPath.at(CalculatedPath.size()-2)].yPOS);
 
-					temp[2] = temp[0] - (function_r(temp[1] - temp[0]) * RecievedData->Width);
-					temp[3] = temp[0] + (function_r(temp[1] - temp[0]) * RecievedData->Width);
+					temp[2] = temp[0] - (function_r(temp[1] - temp[0]) * RecievedData.Width);
+					temp[3] = temp[0] + (function_r(temp[1] - temp[0]) * RecievedData.Width);
 
 					PolygonTemp.push_back(amx_ftoc(temp[2].X));
 					PolygonTemp.push_back(amx_ftoc(temp[2].Y));
@@ -147,7 +142,7 @@ PLUGIN_EXPORT bool PLUGIN_CALL Load( void **ppData )
 						temp[1] = DPoint(Thread_xNode[CalculatedPath.at(k+1)].xPOS,Thread_xNode[CalculatedPath.at(k+1)].yPOS);
 						temp[2] = DPoint(Thread_xNode[CalculatedPath.at(k-1)].xPOS,Thread_xNode[CalculatedPath.at(k-1)].yPOS);
 
-						temp[3] = temp[0] - (function_r(function_u(temp[1] - temp[0]) - function_u(temp[2] - temp[0])) * RecievedData->Width);
+						temp[3] = temp[0] - (function_r(function_u(temp[1] - temp[0]) - function_u(temp[2] - temp[0])) * RecievedData.Width);
 					
 						PolygonTemp.push_back(amx_ftoc(temp[3].X));
 						PolygonTemp.push_back(amx_ftoc(temp[3].Y));
@@ -165,7 +160,7 @@ PLUGIN_EXPORT bool PLUGIN_CALL Load( void **ppData )
 			{
 				PolygonTemp.push_back(0);
 			}
-			if(RecievedData->GetNodePositions == 1)
+			if(RecievedData.GetNodePositions == 1)
 			{
 				for(int i = 0, y = CalculatedPath.size(); i < y; ++i)
 				{
@@ -180,14 +175,13 @@ PLUGIN_EXPORT bool PLUGIN_CALL Load( void **ppData )
 				npY.push_back(0);
 				npZ.push_back(0);	
 			}
-			PassVector.push(new PassData(CalculatedPath.begin(),CalculatedPath.end(),RecievedData->extraid,CalculatedPathCost,RecievedData->script,PolygonTemp.begin(),PolygonTemp.end(),npX.begin(),npX.end(),npY.begin(),npY.end(),npZ.begin(),npZ.end()));
+			PassVector.push(PassData(CalculatedPath.begin(),CalculatedPath.end(),RecievedData.extraid,CalculatedPathCost,RecievedData.script,PolygonTemp.begin(),PolygonTemp.end(),npX.begin(),npX.end(),npY.begin(),npY.end(),npZ.begin(),npZ.end()));
 			CalculatedPath.clear();
 			PolygonTemp.clear();
 			npX.clear();
 			npY.clear();
 			npZ.clear();
 			CalculatedPathCost = 0;
-			delete RecievedData;
 		}
 		SLEEP(5);
 		//-------------------------
@@ -198,31 +192,30 @@ PLUGIN_EXPORT bool PLUGIN_CALL Load( void **ppData )
 PLUGIN_EXPORT void PLUGIN_CALL
 	ProcessTick()
 {
-	if(PassVector.pop(LocalPass))
+	if(PassVector.try_pop(LocalPass))
 	{
-		auto it = rcp_amxinfo.find(LocalPass->script);
+		auto it = rcp_amxinfo.find(LocalPass.script);
 		if (it != rcp_amxinfo.end()) 
 		{
 			if(it->second.GPSRouteCalculated.PublicFound)
 			{
-				amx_PushArray(LocalPass->script, &ProcessTick_amxaddr[4], 0, LocalPass->npZ.data(), LocalPass->npZ.size());
-				amx_PushArray(LocalPass->script, &ProcessTick_amxaddr[3], 0, LocalPass->npY.data(), LocalPass->npY.size());
-				amx_PushArray(LocalPass->script, &ProcessTick_amxaddr[2], 0, LocalPass->npX.data(), LocalPass->npX.size());
-				amx_Push(LocalPass->script, LocalPass->Polygon.size());
-				amx_PushArray(LocalPass->script, &ProcessTick_amxaddr[1], 0, LocalPass->Polygon.data(), LocalPass->Polygon.size());
-				amx_Push(LocalPass->script, LocalPass->MoveCost);
-				amx_Push(LocalPass->script, LocalPass->Paths.size());
-				amx_PushArray(LocalPass->script, &ProcessTick_amxaddr[0], 0, LocalPass->Paths.data(), LocalPass->Paths.size());
-				amx_Push(LocalPass->script, LocalPass->extraid);
-				amx_Exec(LocalPass->script, NULL, it->second.GPSRouteCalculated.POINTER);
-				amx_Release(LocalPass->script,ProcessTick_amxaddr[0]);
-				amx_Release(LocalPass->script,ProcessTick_amxaddr[1]);
-				amx_Release(LocalPass->script,ProcessTick_amxaddr[2]);
-				amx_Release(LocalPass->script,ProcessTick_amxaddr[3]);
-				amx_Release(LocalPass->script,ProcessTick_amxaddr[4]);
+				amx_PushArray(LocalPass.script, &ProcessTick_amxaddr[4], 0, LocalPass.npZ.data(), LocalPass.npZ.size());
+				amx_PushArray(LocalPass.script, &ProcessTick_amxaddr[3], 0, LocalPass.npY.data(), LocalPass.npY.size());
+				amx_PushArray(LocalPass.script, &ProcessTick_amxaddr[2], 0, LocalPass.npX.data(), LocalPass.npX.size());
+				amx_Push(LocalPass.script, LocalPass.Polygon.size());
+				amx_PushArray(LocalPass.script, &ProcessTick_amxaddr[1], 0, LocalPass.Polygon.data(), LocalPass.Polygon.size());
+				amx_Push(LocalPass.script, LocalPass.MoveCost);
+				amx_Push(LocalPass.script, LocalPass.Paths.size());
+				amx_PushArray(LocalPass.script, &ProcessTick_amxaddr[0], 0, LocalPass.Paths.data(), LocalPass.Paths.size());
+				amx_Push(LocalPass.script, LocalPass.extraid);
+				amx_Exec(LocalPass.script, NULL, it->second.GPSRouteCalculated.POINTER);
+				amx_Release(LocalPass.script,ProcessTick_amxaddr[0]);
+				amx_Release(LocalPass.script,ProcessTick_amxaddr[1]);
+				amx_Release(LocalPass.script,ProcessTick_amxaddr[2]);
+				amx_Release(LocalPass.script,ProcessTick_amxaddr[3]);
+				amx_Release(LocalPass.script,ProcessTick_amxaddr[4]);
 			}
 		}
-		delete LocalPass;
 	}
 	if(g_Ticked++ == g_TickMax)
 	{

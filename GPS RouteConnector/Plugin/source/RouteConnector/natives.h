@@ -124,19 +124,14 @@ namespace Natives
 		if(params[1] < 0 || params[1] > (MAX_NODES-1) || params[2] < 0 || params[2] > (MAX_NODES-1) || params[1] == params[2])
 			return 0;
 
-		QueueVector.push(new QuedData(params[1],params[2],params[3],amx,params[4],amx_ctof(params[5]),params[6]));
+		QueueVector.push(QuedData(params[1],params[2],params[3],amx,params[4],amx_ctof(params[5]),params[6]));
 		++QueueSize;
 		return 1;
 	}
 
 	static cell AMX_NATIVE_CALL n_DeleteRouteIDFromQueue( AMX* amx, cell* params )
 	{
-		struct empty_functor {
-			empty_functor() {}
-			empty_functor(QuedData *data) { delete data;  }
-			void operator()(QuedData *data) { delete data; }
-		} _empty_functor;
-		QueueVector.consume_all<empty_functor>(_empty_functor);
+		QueueVector.clear();
 		QueueSize = 0;
 		return 1;
 	}
@@ -254,6 +249,7 @@ namespace Natives
 			if(RouteVector.at(i).id == params[1])
 			{
 				RouteID.erase(RouteID.begin()+i);
+				RouteVector.at(i).~RouteData();
 				RouteVector.erase(RouteVector.begin()+i);
 				return 1;
 			}

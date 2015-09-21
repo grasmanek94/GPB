@@ -98,7 +98,7 @@ void Graph::connect_oneway(Node* pFirst, Node* pSecond, float moveCost)
 
 void Graph::findPath_r(Node* pStart, Node* pEnd, std::vector<cell> &road, cell &costMx)
 {
-	if(pStart == pEnd)
+	if(pStart == pEnd || pEnd == nullptr || pStart == nullptr)
 	{
 		return;
 	}
@@ -115,7 +115,7 @@ void Graph::findPath_r(Node* pStart, Node* pEnd, std::vector<cell> &road, cell &
 		pCurrNode = openList.front();
 
 		//Exit if we're are the goal
-		if(pCurrNode == pEnd)
+		if (pCurrNode == pEnd || pCurrNode == nullptr || pEnd == nullptr)
 			break;
 
 		//Remove the node from the open list and place it in the closed
@@ -128,7 +128,7 @@ void Graph::findPath_r(Node* pStart, Node* pEnd, std::vector<cell> &road, cell &
 		{
 			pEdgeNode = (*i)->pNode;
 			//If it's closed we've already analysed it
-			if(!pEdgeNode->getClosed() && pCurrNode->DoesExist() == true)
+			if(pEdgeNode != nullptr && !pEdgeNode->getClosed() && pCurrNode->DoesExist() == true)
 			{
 				if(!inList(pEdgeNode,&openList))
 				{
@@ -154,7 +154,7 @@ void Graph::findPath_r(Node* pStart, Node* pEnd, std::vector<cell> &road, cell &
 		std::sort(openList.begin(), openList.end(),  Graph::compareNodes);
 	}
 	//Make sure we actually found a path
-	if(pEnd->getParent() != NULL)
+	if(pEnd != nullptr && pEnd->getParent() != NULL)
 	{
 		//Output the path
 		//Use a stack because it is LIFO

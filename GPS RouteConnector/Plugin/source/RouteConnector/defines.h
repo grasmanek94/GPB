@@ -1,6 +1,6 @@
 #pragma once
 
-#define PLUGIN_VERSION (184)
+#define PLUGIN_VERSION (185)
 
 #define AREA_SIZE (100.0f)//Define your Area size here lol.
 #define AREA_AMOUNT (400)//round_up(40000/AREA_SIZE)
