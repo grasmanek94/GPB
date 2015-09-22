@@ -304,34 +304,38 @@ namespace Functions
 	{
 		if(ignorenode < 0 || ignorenode > (MAX_NODES-1))
 			ignorenode = (-1);
+
 		int Nearest = -1;
 		float prevdist = MaxDist;
 		float newdist;
 
-		for(int a = 0, b = RouteVector.size(); a < b; ++a)
+		auto found = RouteMap.find(ArrayID);
+
+		if (found == RouteMap.end())
 		{
-			if(RouteVector.at(b).id == ArrayID)
+			return -1;
+		}
+
+		for(int i = 0, j = found->second.Paths.size(), NodeID = 0; i < j; ++i)
+		{
+			NodeID = found->second.Paths.at(i);
+			if(NodeID == ignorenode)
+				continue;
+			if(IgnoreFlagged == 1)
 			{
-				for(int i = 0, j = RouteVector.at(b).Paths.size(), NodeID = 0; i < j; ++i)
+				if (found->second.Taken.at(i) == 1)
 				{
-					NodeID = RouteVector.at(b).Paths.at(i);
-					if(NodeID == ignorenode)
-						continue;
-					if(IgnoreFlagged == 1)
-					{
-						if(RouteVector.at(b).Taken.at(i) == 1)
-							continue;
-					}
-					newdist = (pow(xNode[NodeID].xPOS-X,2.0f)+pow(xNode[NodeID].yPOS-Y,2.0f)+pow(xNode[NodeID].zPOS-Z,2.0f));
-					if(newdist < prevdist)
-					{
-						prevdist = newdist;
-						Nearest = NodeID;
-					}
+					continue;
 				}
-				break;
+			}
+			newdist = (pow(xNode[NodeID].xPOS-X,2.0f)+pow(xNode[NodeID].yPOS-Y,2.0f)+pow(xNode[NodeID].zPOS-Z,2.0f));
+			if(newdist < prevdist)
+			{
+				prevdist = newdist;
+				Nearest = NodeID;
 			}
 		}
+
 		return Nearest;
 	}
 

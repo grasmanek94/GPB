@@ -235,19 +235,11 @@ struct RouteData //thanks to DeadMG for improvements.
 { 
     std::vector<cell> Paths;
     std::deque<bool> Taken; // no deque<bool> spec
-    int id; 
-    template<typename Iterator> RouteData(Iterator begin, Iterator end, int id_)
+
+    template<typename Iterator> RouteData(Iterator begin, Iterator end)
         : Paths(begin, end)
         , Taken(Paths.size())
-    { 
-        id = id_; 
-    }
-	~RouteData()
-	{
-		Paths.clear();
-		Taken.clear();
-	}
-	
+    { }
 };
 //
 
@@ -276,8 +268,7 @@ struct Callbacks
 
 cell				ProcessTick_amxaddr[5] =		{NULL,NULL,NULL,NULL,NULL};
 
-std::vector			<RouteData>						RouteVector;
-std::vector			<int>							RouteID;
+std::map			<int, RouteData>				RouteMap;
 std::vector			<int>							PlayerLoopList;
 std::map			<AMX*, Callbacks>				rcp_amxinfo;
 std::vector			<RM>							RemoveNodes;

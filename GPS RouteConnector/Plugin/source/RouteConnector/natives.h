@@ -225,75 +225,68 @@ namespace Natives
 
 	static cell AMX_NATIVE_CALL n_ReturnArray( AMX* amx, cell* params )
 	{
-		for(int i = 0, j = RouteVector.size(); i < j; ++i)
+		auto found = RouteMap.find(params[1]);
+
+		if (found == RouteMap.end())
 		{
-			if(RouteVector.at(i).id == params[1])
-			{
-				cell *dest = NULL;
-				amx_GetAddr(amx,params[2],&dest);
-				for(int a = 0, b = params[3]; a < b; ++a)
-				{
-					dest[a] = RouteVector.at(i).Paths[a];
-				}
-				//dest = NULL;
-				return RouteVector.at(i).Paths.size();
-			}
+			return 0;
 		}
-		return 0;
+
+		cell *dest = NULL;
+		amx_GetAddr(amx,params[2],&dest);
+		for(int a = 0, b = params[3]; a < b; ++a)
+		{
+			dest[a] = found->second.Paths[a];
+		}
+		//dest = NULL;
+		return found->second.Paths.size();
 	}
 
 	static cell AMX_NATIVE_CALL n_DeleteArray( AMX* amx, cell* params )
 	{
-		for(int i = 0, j = RouteVector.size(); i < j; ++i)
+		auto found = RouteMap.find(params[1]);
+
+		if (found == RouteMap.end())
 		{
-			if(RouteVector.at(i).id == params[1])
-			{
-				RouteID.erase(RouteID.begin()+i);
-				RouteVector.at(i).~RouteData();
-				RouteVector.erase(RouteVector.begin()+i);
-				return 1;
-			}
+			return 0;
 		}
-		return 0;
+
+		RouteMap.erase(found);
+		return 1;
 	}
 
 	static cell AMX_NATIVE_CALL n_StoreArray( AMX* amx, cell* params )
 	{
 		std::vector <cell> temppath;
-		int IDcounter = 0;
-		for(int i = 0,j = RouteID.size(); i < j; ++i)
-		{
-			if(RouteID.at(i) == IDcounter)
-			{
-				i = 0;
-				IDcounter++;
-			}
-		}
+		int IDcounter = RouteMap.size() ? RouteMap.rbegin()->first + 1 : 0;
+
 		cell *dest = NULL;
 		amx_GetAddr(amx,params[2],&dest);
-		RouteID.push_back(IDcounter);
-		std::copy ( dest, dest + params[1], std::back_inserter ( temppath ) );
-		RouteVector.push_back(RouteData(temppath.begin(),temppath.end(),IDcounter));
+
+		std::copy(dest, dest + params[1], std::back_inserter(temppath));
+		RouteMap.emplace(std::pair<int, RouteData>(IDcounter, RouteData(temppath.begin(), temppath.end())));
+
 		return IDcounter;
 	}
 
 	static cell AMX_NATIVE_CALL n_GetNextNodeInArray( AMX* amx, cell* params )
 	{
-		for(int i = 0, j = RouteVector.size(); i < j; ++i)
+		auto found = RouteMap.find(params[1]);
+
+		if (found == RouteMap.end())
 		{
-			if(RouteVector.at(i).id == params[1])
+			return 0;
+		}
+
+		for(int x = 0, m = (int)found->second.Paths.size(); x < m; ++x)
+		{
+			if(found->second.Taken[x] == false)
 			{
-				for(int x = 0, m = (int)RouteVector.at(i).Paths.size(); x < m; ++x)
+				if(params[2] == 1)
 				{
-					if(RouteVector.at(i).Taken[x] == false)
-					{
-						if(params[2] == 1)
-						{
-							RouteVector.at(i).Taken[x] = true;
-						}
-						return RouteVector.at(i).Paths[x];
-					}
+					found->second.Taken[x] = true;
 				}
+				return found->second.Paths[x];
 			}
 		}
 		return -1;
@@ -301,139 +294,165 @@ namespace Natives
 
 	static cell AMX_NATIVE_CALL n_IsNodeInArray( AMX* amx, cell* params )
 	{
-		for(int i = 0, j = RouteVector.size(); i < j; ++i)
+		auto found = RouteMap.find(params[1]);
+
+		if (found == RouteMap.end())
 		{
-			if(RouteVector.at(i).id == params[1])
+			return 0;
+		}
+
+
+		for(int x = 0, m = (int)found->second.Paths.size(); x < m; ++x)
+		{
+			if (found->second.Paths[x] == params[2])
 			{
-				for(int x = 0, m = (int)RouteVector.at(i).Paths.size(); x < m; ++x)
-				{
-					if(RouteVector.at(i).Paths[x] == params[2])
-						return 1;
-				}
+				return 1;
 			}
 		}
+
 		return 0;
 	}
 
 	static cell AMX_NATIVE_CALL n_SetNodeFlagID( AMX* amx, cell* params )
 	{
-		for(int i = 0, j = RouteVector.size(); i < j; ++i)
-		{
-			if(RouteVector.at(i).id == params[1])
-			{
-				for(int x = 0, m = (int)RouteVector.at(i).Paths.size(); x < m; ++x)
-				{
-					if(RouteVector.at(i).Paths[x] == params[2])
-					{
-						if(params[3] == 0)
-						{
-							RouteVector.at(i).Taken[x] = false;
-							if(params[4] == 1)
-							{
-								for(int a = 0; a < x; ++a)
-								{
-									RouteVector.at(i).Taken[a] = false;
-								}
-							}
-						}
-						else
-						{
-							RouteVector.at(i).Taken[x] = true;
-							if(params[4] == 1)
-							{
-								for(int a = 0; a < x; ++a)
-								{
-									RouteVector.at(i).Taken[a] = true;
-								}
-							}
-						}
-					}
-				}
-				return 1;
-			}
-		}
-		return 0;
-	}
+		auto found = RouteMap.find(params[1]);
 
-	static cell AMX_NATIVE_CALL n_SetNodeFlagIndex( AMX* amx, cell* params )
-	{
-		for(int i = 0, j = RouteVector.size(); i < j; ++i)
+		if (found == RouteMap.end())
 		{
-			if(RouteVector.at(i).id == params[1])
+			return 0;
+		}
+
+		for(int x = 0, m = (int)found->second.Paths.size(); x < m; ++x)
+		{
+			if(found->second.Paths[x] == params[2])
 			{
 				if(params[3] == 0)
 				{
-					RouteVector.at(i).Taken[params[2]] = false;
+					found->second.Taken[x] = false;
 					if(params[4] == 1)
 					{
-						for(int a = 0; a < params[2]; ++a)
+						for(int a = 0; a < x; ++a)
 						{
-							RouteVector.at(i).Taken[a] = false;
+							found->second.Taken[a] = false;
 						}
 					}
 				}
 				else
 				{
-					RouteVector.at(i).Taken[params[2]] = true;
+					found->second.Taken[x] = true;
 					if(params[4] == 1)
 					{
-						for(int a = 0; a < params[2]; ++a)
+						for(int a = 0; a < x; ++a)
 						{
-							RouteVector.at(i).Taken[a] = true;
+							found->second.Taken[a] = true;
 						}
 					}
 				}
-				return 1;
 			}
 		}
-		return 0;
+		return 1;
+
+	}
+
+	static cell AMX_NATIVE_CALL n_SetNodeFlagIndex( AMX* amx, cell* params )
+	{
+		auto found = RouteMap.find(params[1]);
+
+		if (found == RouteMap.end())
+		{
+			return 0;
+		}
+
+		if(params[3] == 0)
+		{
+			found->second.Taken[params[2]] = false;
+			if(params[4] == 1)
+			{
+				for(int a = 0; a < params[2]; ++a)
+				{
+					found->second.Taken[a] = false;
+				}
+			}
+		}
+		else
+		{
+			found->second.Taken[params[2]] = true;
+			if(params[4] == 1)
+			{
+				for(int a = 0; a < params[2]; ++a)
+				{
+					found->second.Taken[a] = true;
+				}
+			}
+		}
+
+		return 1;
 	}
 
 	static cell AMX_NATIVE_CALL n_GetRouteAtPos( AMX* amx, cell* params )
 	{
-		for(int i = 0, j = RouteVector.size(); i < j; ++i)
+		auto found = RouteMap.find(params[1]);
+
+		if (found == RouteMap.end())
 		{
-			if(RouteVector.at(i).id == params[1])
-			{
-				if((int)RouteVector.at(i).Paths.size() > i)
-				{
-					cell *dest = NULL;
-					amx_GetAddr(amx,params[3],&dest);
-					*dest = RouteVector.at(i).Paths.size();
-					return RouteVector.at(i).Paths[params[2]];
-				}
-			}
+			return 0;
 		}
+
+		if((int)found->second.Paths.size() > params[2])
+		{
+			cell *dest = NULL;
+			amx_GetAddr(amx,params[3],&dest);
+			*dest = found->second.Paths.size();
+			return found->second.Paths[params[2]];
+		}
+
 		return 0;
 	}
 
-	static cell AMX_NATIVE_CALL n_GetRouteFromTo( AMX* amx, cell* params )
+	static cell AMX_NATIVE_CALL n_GetRouteFromTo(AMX* amx, cell* params)
 	{
-		for(int i = 0, j = RouteVector.size(); i < j; ++i)
+		auto found = RouteMap.find(params[1]);
+
+		if (found == RouteMap.end())
 		{
-			if(RouteVector.at(i).id == params[1])
+			return 0;
+		}
+
+		cell *dest = NULL;
+		amx_GetAddr(amx, params[4], &dest);
+
+		int a = params[2];
+		int b = params[3];
+		int c = 0;
+
+		if (b >= (int)found->second.Paths.size())
+		{
+			return 0;
+		}
+
+		for(; a < b; ++a)
+		{
+			if(c == params[5])
 			{
-				cell *dest = NULL;
-				amx_GetAddr(amx,params[4],&dest);
-				int c = 0;
-				for(int a = params[2], b = params[3]; a < b; ++a)
-				{
-					if(c == params[5])
-					{
-						return c;
-					}
-					dest[c] = RouteVector.at(i).Paths[a];
-					c++;
-				}
 				return c;
 			}
+			dest[c++] = found->second.Paths[a];
 		}
-		return 0;
+
+		return c;
+
 	}
 
 	static cell AMX_NATIVE_CALL n_GetRouteArraySize( AMX* amx, cell* params )
 	{
-		return RouteVector.at(params[1]).Paths.size();
+		auto found = RouteMap.find(params[1]);
+
+		if (found == RouteMap.end())
+		{
+			return 0;
+		}
+
+		return found->second.Paths.size();
 	}
 
 	static cell AMX_NATIVE_CALL n_RemoveNode( AMX* amx, cell* params )
@@ -550,33 +569,34 @@ namespace Natives
 
 	static cell AMX_NATIVE_CALL n_GetNodeFlagID( AMX* amx, cell* params )
 	{
-		for(int i = 0, j = RouteVector.size(); i < j; ++i)
+		auto found = RouteMap.find(params[1]);
+
+		if (found == RouteMap.end())
 		{
-			if(RouteVector.at(i).id == params[1])
+			return -1;
+		}
+
+		for(int x = 0, m = (int)found->second.Paths.size(); x < m; ++x)
+		{
+			if(found->second.Paths[x] == params[2])
 			{
-				for(int x = 0, m = (int)RouteVector.at(i).Paths.size(); x < m; ++x)
-				{
-					if(RouteVector.at(i).Paths[x] == params[2])
-					{
-						return RouteVector.at(i).Taken[x];
-					}
-				}
-				return -1;
+				return found->second.Taken[x];
 			}
 		}
 		return -1;
+
 	}
 
 	static cell AMX_NATIVE_CALL n_GetNodeFlagIndex( AMX* amx, cell* params )
 	{
-		for(int i = 0, j = RouteVector.size(); i < j; ++i)
+		auto found = RouteMap.find(params[1]);
+
+		if (found == RouteMap.end())
 		{
-			if(RouteVector.at(i).id == params[1])
-			{
-				return RouteVector.at(i).Taken[params[2]];
-			}
+			return -1;
 		}
-		return -1;
+
+		return found->second.Taken[params[2]];
 	}
 
 	static cell AMX_NATIVE_CALL n_NearestNodeFromPointInArray( AMX* amx, cell* params )

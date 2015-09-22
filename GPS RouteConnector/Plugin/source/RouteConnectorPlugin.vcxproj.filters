@@ -7,4 +7,13 @@
   <ItemGroup>
     <None Include="..\include\RouteConnector.inc" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="RouteConnector\DPoint.h" />
+    <ClInclude Include="RouteConnector\functions.h" />
+    <ClInclude Include="RouteConnector\main.h" />
+    <ClInclude Include="RouteConnector\natives.h" />
+    <ClInclude Include="RouteConnector\PathFinder.h" />
+    <ClInclude Include="RouteConnector\plugin.h" />
+    <ClInclude Include="RouteConnector\defines.h" />
+  </ItemGroup>
 </Project>

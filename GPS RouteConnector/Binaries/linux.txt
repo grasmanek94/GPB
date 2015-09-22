@@ -1,0 +1,10 @@
+if you get elfclass errors you don't have the right x86 packages installed
+	fix:
+		dpkg --add-architecture i386 (this is for debian, use equivalent on your OS)
+		apt-get update (or yum)
+		apt-get install libtbb2:i386 (or yum)
+
+if you get missing library libtbb2.so you don't have libtbb2 package installed
+	fix:
+		apt-get install libtbb2 (or yum, if on x86)
+		apt-get install libtbb2:i386 (or yum, if on x86_x64)

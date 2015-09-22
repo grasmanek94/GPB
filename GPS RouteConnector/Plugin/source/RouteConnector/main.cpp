@@ -93,95 +93,98 @@ PLUGIN_EXPORT bool PLUGIN_CALL Load( void **ppData )
 		if(QueueVector.try_pop(RecievedData))
 		{
 			--QueueSize;
-			dgraph->findPath_r(Thread_xNode[RecievedData.start].NodeID ,Thread_xNode[RecievedData.end].NodeID,CalculatedPath,CalculatedPathCost);
-			dgraph->reset();
-
-			if(RecievedData.CreatePolygon == 1)
+			if (dgraph)
 			{
-				if(CalculatedPath.size() > 3)
+				dgraph->findPath_r(Thread_xNode[RecievedData.start].NodeID, Thread_xNode[RecievedData.end].NodeID, CalculatedPath, CalculatedPathCost);
+				dgraph->reset();
+
+				if (RecievedData.CreatePolygon == 1)
 				{
-					//black-magic-geometry-stuff
-					DPoint temp[4];
-					temp[0] = DPoint(Thread_xNode[CalculatedPath.at(0)].xPOS,Thread_xNode[CalculatedPath.at(0)].yPOS);
-					temp[1] = DPoint(Thread_xNode[CalculatedPath.at(1)].xPOS,Thread_xNode[CalculatedPath.at(1)].yPOS);
-
-					temp[2] = temp[0] - (function_r(temp[1] - temp[0]) * RecievedData.Width);
-					temp[3] = temp[0] + (function_r(temp[1] - temp[0]) * RecievedData.Width);
-
-					PolygonTemp.push_back(amx_ftoc(temp[2].X));
-					PolygonTemp.push_back(amx_ftoc(temp[2].Y));
-					PolygonTemp.push_back(amx_ftoc(temp[3].X));
-					PolygonTemp.push_back(amx_ftoc(temp[3].Y));
-						
-					for(unsigned int k = 1; k < CalculatedPath.size()-2; ++k)
+					if (CalculatedPath.size() > 3)
 					{
-						temp[0] = DPoint(Thread_xNode[CalculatedPath.at(k)].xPOS,Thread_xNode[CalculatedPath.at(k)].yPOS);
-						temp[1] = DPoint(Thread_xNode[CalculatedPath.at(k+1)].xPOS,Thread_xNode[CalculatedPath.at(k+1)].yPOS);
-						temp[2] = DPoint(Thread_xNode[CalculatedPath.at(k-1)].xPOS,Thread_xNode[CalculatedPath.at(k-1)].yPOS);
-						
-						temp[3] = temp[0] + (function_r(function_u(temp[1] - temp[0]) - function_u(temp[2] - temp[0])) * RecievedData.Width);
-						
+						//black-magic-geometry-stuff
+						DPoint temp[4];
+						temp[0] = DPoint(Thread_xNode[CalculatedPath.at(0)].xPOS, Thread_xNode[CalculatedPath.at(0)].yPOS);
+						temp[1] = DPoint(Thread_xNode[CalculatedPath.at(1)].xPOS, Thread_xNode[CalculatedPath.at(1)].yPOS);
+
+						temp[2] = temp[0] - (function_r(temp[1] - temp[0]) * RecievedData.Width);
+						temp[3] = temp[0] + (function_r(temp[1] - temp[0]) * RecievedData.Width);
+
+						PolygonTemp.push_back(amx_ftoc(temp[2].X));
+						PolygonTemp.push_back(amx_ftoc(temp[2].Y));
 						PolygonTemp.push_back(amx_ftoc(temp[3].X));
 						PolygonTemp.push_back(amx_ftoc(temp[3].Y));
-					}
-						
-					temp[0] = DPoint(Thread_xNode[CalculatedPath.at(CalculatedPath.size()-1)].xPOS,Thread_xNode[CalculatedPath.at(CalculatedPath.size()-1)].yPOS);
-					temp[1] = DPoint(Thread_xNode[CalculatedPath.at(CalculatedPath.size()-2)].xPOS,Thread_xNode[CalculatedPath.at(CalculatedPath.size()-2)].yPOS);
 
-					temp[2] = temp[0] - (function_r(temp[1] - temp[0]) * RecievedData.Width);
-					temp[3] = temp[0] + (function_r(temp[1] - temp[0]) * RecievedData.Width);
+						for (unsigned int k = 1; k < CalculatedPath.size() - 2; ++k)
+						{
+							temp[0] = DPoint(Thread_xNode[CalculatedPath.at(k)].xPOS, Thread_xNode[CalculatedPath.at(k)].yPOS);
+							temp[1] = DPoint(Thread_xNode[CalculatedPath.at(k + 1)].xPOS, Thread_xNode[CalculatedPath.at(k + 1)].yPOS);
+							temp[2] = DPoint(Thread_xNode[CalculatedPath.at(k - 1)].xPOS, Thread_xNode[CalculatedPath.at(k - 1)].yPOS);
 
-					PolygonTemp.push_back(amx_ftoc(temp[2].X));
-					PolygonTemp.push_back(amx_ftoc(temp[2].Y));
-					PolygonTemp.push_back(amx_ftoc(temp[3].X));
-					PolygonTemp.push_back(amx_ftoc(temp[3].Y));
-						
-					for(unsigned int k = CalculatedPath.size()-2; k > 0; --k)
-					{
-						temp[0] = DPoint(Thread_xNode[CalculatedPath.at(k)].xPOS,Thread_xNode[CalculatedPath.at(k)].yPOS);
-						temp[1] = DPoint(Thread_xNode[CalculatedPath.at(k+1)].xPOS,Thread_xNode[CalculatedPath.at(k+1)].yPOS);
-						temp[2] = DPoint(Thread_xNode[CalculatedPath.at(k-1)].xPOS,Thread_xNode[CalculatedPath.at(k-1)].yPOS);
+							temp[3] = temp[0] + (function_r(function_u(temp[1] - temp[0]) - function_u(temp[2] - temp[0])) * RecievedData.Width);
 
-						temp[3] = temp[0] - (function_r(function_u(temp[1] - temp[0]) - function_u(temp[2] - temp[0])) * RecievedData.Width);
-					
+							PolygonTemp.push_back(amx_ftoc(temp[3].X));
+							PolygonTemp.push_back(amx_ftoc(temp[3].Y));
+						}
+
+						temp[0] = DPoint(Thread_xNode[CalculatedPath.at(CalculatedPath.size() - 1)].xPOS, Thread_xNode[CalculatedPath.at(CalculatedPath.size() - 1)].yPOS);
+						temp[1] = DPoint(Thread_xNode[CalculatedPath.at(CalculatedPath.size() - 2)].xPOS, Thread_xNode[CalculatedPath.at(CalculatedPath.size() - 2)].yPOS);
+
+						temp[2] = temp[0] - (function_r(temp[1] - temp[0]) * RecievedData.Width);
+						temp[3] = temp[0] + (function_r(temp[1] - temp[0]) * RecievedData.Width);
+
+						PolygonTemp.push_back(amx_ftoc(temp[2].X));
+						PolygonTemp.push_back(amx_ftoc(temp[2].Y));
 						PolygonTemp.push_back(amx_ftoc(temp[3].X));
 						PolygonTemp.push_back(amx_ftoc(temp[3].Y));
+
+						for (unsigned int k = CalculatedPath.size() - 2; k > 0; --k)
+						{
+							temp[0] = DPoint(Thread_xNode[CalculatedPath.at(k)].xPOS, Thread_xNode[CalculatedPath.at(k)].yPOS);
+							temp[1] = DPoint(Thread_xNode[CalculatedPath.at(k + 1)].xPOS, Thread_xNode[CalculatedPath.at(k + 1)].yPOS);
+							temp[2] = DPoint(Thread_xNode[CalculatedPath.at(k - 1)].xPOS, Thread_xNode[CalculatedPath.at(k - 1)].yPOS);
+
+							temp[3] = temp[0] - (function_r(function_u(temp[1] - temp[0]) - function_u(temp[2] - temp[0])) * RecievedData.Width);
+
+							PolygonTemp.push_back(amx_ftoc(temp[3].X));
+							PolygonTemp.push_back(amx_ftoc(temp[3].Y));
+						}
+						//close the polygon
+						PolygonTemp.push_back(PolygonTemp.at(0));
+						PolygonTemp.push_back(PolygonTemp.at(1));
 					}
-					//close the polygon
-					PolygonTemp.push_back(PolygonTemp.at(0));
-					PolygonTemp.push_back(PolygonTemp.at(1));
+					else
+					{
+						PolygonTemp.push_back(0);
+					}
 				}
 				else
 				{
 					PolygonTemp.push_back(0);
 				}
-			}
-			else
-			{
-				PolygonTemp.push_back(0);
-			}
-			if(RecievedData.GetNodePositions == 1)
-			{
-				for(int i = 0, y = CalculatedPath.size(); i < y; ++i)
+				if (RecievedData.GetNodePositions == 1)
 				{
-					npX.push_back(amx_ftoc(Thread_xNode[CalculatedPath.at(i)].xPOS));
-					npY.push_back(amx_ftoc(Thread_xNode[CalculatedPath.at(i)].yPOS));
-					npZ.push_back(amx_ftoc(Thread_xNode[CalculatedPath.at(i)].zPOS));		
+					for (int i = 0, y = CalculatedPath.size(); i < y; ++i)
+					{
+						npX.push_back(amx_ftoc(Thread_xNode[CalculatedPath.at(i)].xPOS));
+						npY.push_back(amx_ftoc(Thread_xNode[CalculatedPath.at(i)].yPOS));
+						npZ.push_back(amx_ftoc(Thread_xNode[CalculatedPath.at(i)].zPOS));
+					}
 				}
+				else
+				{
+					npX.push_back(0);
+					npY.push_back(0);
+					npZ.push_back(0);
+				}
+				PassVector.push(PassData(CalculatedPath.begin(), CalculatedPath.end(), RecievedData.extraid, CalculatedPathCost, RecievedData.script, PolygonTemp.begin(), PolygonTemp.end(), npX.begin(), npX.end(), npY.begin(), npY.end(), npZ.begin(), npZ.end()));
+				CalculatedPath.clear();
+				PolygonTemp.clear();
+				npX.clear();
+				npY.clear();
+				npZ.clear();
+				CalculatedPathCost = 0;
 			}
-			else
-			{
-				npX.push_back(0);
-				npY.push_back(0);
-				npZ.push_back(0);	
-			}
-			PassVector.push(PassData(CalculatedPath.begin(),CalculatedPath.end(),RecievedData.extraid,CalculatedPathCost,RecievedData.script,PolygonTemp.begin(),PolygonTemp.end(),npX.begin(),npX.end(),npY.begin(),npY.end(),npZ.begin(),npZ.end()));
-			CalculatedPath.clear();
-			PolygonTemp.clear();
-			npX.clear();
-			npY.clear();
-			npZ.clear();
-			CalculatedPathCost = 0;
 		}
 		SLEEP(5);
 		//-------------------------

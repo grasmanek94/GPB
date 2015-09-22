@@ -17,10 +17,20 @@
   <ItemGroup>
     <None Include="..\include\RouteConnector.inc" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="RouteConnector\defines.h" />
+    <ClInclude Include="RouteConnector\DPoint.h" />
+    <ClInclude Include="RouteConnector\functions.h" />
+    <ClInclude Include="RouteConnector\main.h" />
+    <ClInclude Include="RouteConnector\natives.h" />
+    <ClInclude Include="RouteConnector\PathFinder.h" />
+    <ClInclude Include="RouteConnector\plugin.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{2DDD1ED9-E8C0-42DD-8059-372E9B549092}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>RouteConnectorPlugin</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
