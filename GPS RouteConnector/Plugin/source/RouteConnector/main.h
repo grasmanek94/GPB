@@ -249,28 +249,11 @@ struct NewLast
 	int newID;
 };
 
-struct CallbackAMX
-{
-	bool PublicFound;
-	int POINTER;
-	CallbackAMX()
-	{
-		PublicFound = false;
-		POINTER = 0;
-	}
-};
-
-struct Callbacks
-{
-	CallbackAMX ClosestNodeIDChange;
-	CallbackAMX GPSRouteCalculated;
-};
-
 cell				ProcessTick_amxaddr[5] =		{NULL,NULL,NULL,NULL,NULL};
 
 std::map			<int, RouteData>				RouteMap;
 std::vector			<int>							PlayerLoopList;
-std::map			<AMX*, Callbacks>				rcp_amxinfo;
+std::set			<AMX*>							rcp_amxinfo;
 std::vector			<RM>							RemoveNodes;
 concurrent_queue	<QuedData>						QueueVector;
 std::vector			<NodesInfoScanner>				Area[535][535];//160.801 Areas, -20.000 to 20.000 (40.000x40.000 = 1.600.000.000 square units), is an 100x100 units area with each unit holding nodes. (6000x6000 area, if all nodes spread evenly each area unit holds 38 nodes, not one big area with 35k nodes :p)

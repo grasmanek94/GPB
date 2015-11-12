@@ -28,6 +28,7 @@
 #include <map>
 #include <stdarg.h>
 #include <math.h>
+#include <set>
 
 //SDK
 #include "plugin.h"
@@ -200,7 +201,8 @@ PLUGIN_EXPORT void PLUGIN_CALL
 		auto it = rcp_amxinfo.find(LocalPass.script);
 		if (it != rcp_amxinfo.end()) 
 		{
-			if(it->second.GPSRouteCalculated.PublicFound)
+			int callback = 0;
+			if(!amx_FindPublic(LocalPass.script, "GPS_WhenRouteIsCalculated", &callback))
 			{
 				amx_PushArray(LocalPass.script, &ProcessTick_amxaddr[4], 0, LocalPass.npZ.data(), LocalPass.npZ.size());
 				amx_PushArray(LocalPass.script, &ProcessTick_amxaddr[3], 0, LocalPass.npY.data(), LocalPass.npY.size());
@@ -211,7 +213,7 @@ PLUGIN_EXPORT void PLUGIN_CALL
 				amx_Push(LocalPass.script, LocalPass.Paths.size());
 				amx_PushArray(LocalPass.script, &ProcessTick_amxaddr[0], 0, LocalPass.Paths.data(), LocalPass.Paths.size());
 				amx_Push(LocalPass.script, LocalPass.extraid);
-				amx_Exec(LocalPass.script, NULL, it->second.GPSRouteCalculated.POINTER);
+				amx_Exec(LocalPass.script, NULL, callback);
 				amx_Release(LocalPass.script,ProcessTick_amxaddr[0]);
 				amx_Release(LocalPass.script,ProcessTick_amxaddr[1]);
 				amx_Release(LocalPass.script,ProcessTick_amxaddr[2]);
@@ -312,34 +314,10 @@ PLUGIN_EXPORT int PLUGIN_CALL AmxLoad( AMX *amx )
 		}
 	}
 	//end sscanf cut
-	Callbacks temp;
-	if (!amx_FindPublic(amx, "OnPlayerClosestNodeIDChange", &temp.ClosestNodeIDChange.POINTER))
-	{
-		temp.ClosestNodeIDChange.PublicFound = true;
-	}
-	if (!amx_FindPublic(amx, "GPS_WhenRouteIsCalculated", &temp.GPSRouteCalculated.POINTER))
-	{
-		temp.GPSRouteCalculated.PublicFound = true;
-	}
-	rcp_amxinfo.insert(std::pair<AMX*,Callbacks>(amx,temp));
-	//std::shared_ptr<void*> ptr(nullptr, [amx](void*){AmxLoad_delay(amx); });
+	rcp_amxinfo.insert(amx);
 	return amx_Register( amx, Natives::AMXNatives, -1 );
 }
-/*
-void AmxLoad_delay( AMX *amx ) 
-{
-	Callbacks temp;
-	if (!amx_FindPublic(amx, "OnPlayerClosestNodeIDChange", &temp.ClosestNodeIDChange.POINTER))
-	{
-		temp.ClosestNodeIDChange.PublicFound = true;
-	}
-	if (!amx_FindPublic(amx, "GPS_WhenRouteIsCalculated", &temp.GPSRouteCalculated.POINTER))
-	{
-		temp.GPSRouteCalculated.PublicFound = true;
-	}
-	rcp_amxinfo.insert(std::pair<AMX*,Callbacks>(amx,temp));
-}
-*/
+
 PLUGIN_EXPORT int PLUGIN_CALL AmxUnload( AMX *amx ) 
 {
 	rcp_amxinfo.erase(amx); 

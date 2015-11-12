@@ -653,14 +653,15 @@ namespace Functions
 
 	void OnPlayerClosestNodeIDChange(int playerid, int oldnode, int newnode)
 	{
-		for (std::map<AMX *,Callbacks>::iterator  a = rcp_amxinfo.begin(); a != rcp_amxinfo.end(); ++a)
+		int callback = 0;
+		for (std::set<AMX *>::iterator a = rcp_amxinfo.begin(); a != rcp_amxinfo.end(); ++a)
 		{	
-			if(a->second.ClosestNodeIDChange.PublicFound)
+			if(!amx_FindPublic(*a, "OnPlayerClosestNodeIDChange", &callback))
 			{
-				amx_Push(a->first, newnode);
-				amx_Push(a->first, oldnode);
-				amx_Push(a->first, playerid);
-				amx_Exec(a->first, NULL, a->second.ClosestNodeIDChange.POINTER);
+				amx_Push(*a, newnode);
+				amx_Push(*a, oldnode);
+				amx_Push(*a, playerid);
+				amx_Exec(*a, NULL, callback);
 			}
 		}
 	}
